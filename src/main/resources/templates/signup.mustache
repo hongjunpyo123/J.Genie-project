@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JGenie - 회원가입</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        .onboarding-container {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 48px 36px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            /* 초기 로딩 애니메이션 */
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            animation: containerFadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes containerFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 20px;
+            left: 36px;
+            right: 36px;
+            height: 4px;
+            background: #f3f4f6;
+            border-radius: 2px;
+            overflow: hidden;
+            /* 프로그레스 바 초기 애니메이션 */
+            opacity: 0;
+            transform: scaleX(0);
+            animation: progressBarFadeIn 0.6s ease-out 0.3s forwards;
+        }
+
+        @keyframes progressBarFadeIn {
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 20%;
+        }
+
+        .step-counter {
+            position: absolute;
+            top: 40px;
+            right: 36px;
+            color: #8b94a8;
+            font-size: 0.875rem;
+            font-weight: 500;
+            /* 스텝 카운터 초기 애니메이션 */
+            opacity: 0;
+            transform: translateX(20px);
+            animation: stepCounterFadeIn 0.5s ease-out 0.4s forwards;
+        }
+
+        @keyframes stepCounterFadeIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .step-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 40px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.4s ease;
+        }
+
+        /* 첫 번째 스텝의 초기 로딩 애니메이션 */
+        .step-content:not(.hidden) {
+            animation: stepContentFadeIn 0.7s ease-out 0.5s both;
+        }
+
+        @keyframes stepContentFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            /* 타이틀 개별 애니메이션 */
+            opacity: 0;
+            transform: translateY(15px);
+            animation: titleFadeIn 0.6s ease-out 0.7s forwards;
+        }
+
+        @keyframes titleFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-subtitle {
+            color: #8b94a8;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 48px;
+            line-height: 1.5;
+            /* 서브타이틀 개별 애니메이션 */
+            opacity: 0;
+            transform: translateY(15px);
+            animation: subtitleFadeIn 0.6s ease-out 0.8s forwards;
+        }
+
+        @keyframes subtitleFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-section {
+            margin-bottom: 48px;
+            /* 입력 섹션 애니메이션 */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: inputSectionFadeIn 0.6s ease-out 0.9s forwards;
+        }
+
+        @keyframes inputSectionFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 20px 0;
+            border: none;
+            border-bottom: 2px solid #e5e7eb;
+            font-size: 1.25rem;
+            font-weight: 500;
+            background: transparent;
+            outline: none;
+            color: #1f2937;
+            transition: all 0.3s ease;
+        }
+
+        /* 숫자 입력 필드의 스핀 버튼 제거 */
+        input[type="number"] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-group input::placeholder {
+            color: #d1d5db;
+            font-weight: 400;
+        }
+
+        .input-group input:focus {
+            border-bottom-color: #667eea;
+        }
+
+        .input-group input:focus + .input-line::after {
+            transform: scaleX(1);
+        }
+
+        .input-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+        }
+
+        .input-line::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .char-count {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .password-requirements {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 4px 0;
+        }
+
+        .requirement-check {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .requirement-check.valid {
+            background: #10b981;
+            color: white;
+        }
+
+        .requirement-check.valid::after {
+            content: '✓';
+        }
+
+        .button-section {
+            margin-top: auto;
+            display: flex;
+            gap: 12px;
+            /* 버튼 섹션 애니메이션 */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: buttonSectionFadeIn 0.6s ease-out 1.0s forwards;
+        }
+
+        @keyframes buttonSectionFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .btn-back {
+            background: #f9fafb;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+            flex: 0 0 auto;
+            min-width: 80px;
+        }
+
+        .btn-back:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-next:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-next:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 스텝 전환 애니메이션 */
+        .step-exit {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        .step-enter {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        /* 환영 화면 스타일 */
+        .welcome-screen {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .welcome-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            animation: bounceIn 0.8s ease-out;
+        }
+
+        .welcome-icon::after {
+            content: 'JGenie';
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 숨김 처리 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 스텝 전환 시에는 초기 애니메이션 제거 */
+        .step-content.step-transition {
+            animation: none !important;
+        }
+
+        .step-content.step-transition .step-title,
+        .step-content.step-transition .step-subtitle,
+        .step-content.step-transition .input-section,
+        .step-content.step-transition .button-section {
+            animation: none !important;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 모바일 최적화 */
+        @media (max-width: 480px) {
+            .onboarding-container {
+                padding: 40px 28px 32px;
+                border-radius: 24px;
+                margin: 0 12px;
+                min-height: 480px;
+            }
+
+            .progress-bar {
+                left: 28px;
+                right: 28px;
+            }
+
+            .step-counter {
+                right: 28px;
+            }
+
+            .step-title {
+                font-size: 1.75rem;
+            }
+
+            .step-subtitle {
+                font-size: 0.95rem;
+                margin-bottom: 36px;
+            }
+
+            .input-group input {
+                font-size: 1.125rem;
+                padding: 18px 0;
+            }
+
+            .btn {
+                padding: 15px 20px;
+                font-size: 0.95rem;
+            }
+
+            .btn-back {
+                min-width: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="onboarding-container">
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="step-counter" id="stepCounter">1 / 5</div>
+
+    <!-- 스텝 1: 이름 -->
+    <div class="step-content" id="step1">
+        <div class="step-title">안녕하세요!<br>성함을 알려주세요</div>
+        <div class="step-subtitle">맞춤형 자기소개서 작성을 위해 필요한 정보입니다</div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="nameInput" placeholder="이름을 입력해주세요" maxlength="20">
+                <div class="input-line"></div>
+            </div>
+            <div class="char-count">
+                <span id="nameCount">0</span> / 20
+            </div>
+        </div>
+
+        <div class="button-section">
+            <button class="btn btn-next" id="nextBtn1" disabled>다음</button>
+        </div>
+    </div>
+
+    <!-- 스텝 2: 나이 -->
+    <div class="step-content hidden" id="step2">
+        <div class="step-title">나이를<br>알려주세요</div>
+        <div class="step-subtitle">연령대에 맞는 자기소개서 톤앤매너를 제안해드릴게요</div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="number" id="ageInput" placeholder="나이를 입력해주세요" min="15" max="80">
+                <div class="input-line"></div>
+            </div>
+            <div class="char-count">만 15세 ~ 80세</div>
+        </div>
+
+        <div class="button-section">
+            <button class="btn btn-back" id="backBtn2">이전</button>
+            <button class="btn btn-next" id="nextBtn2" disabled>다음</button>
+        </div>
+    </div>
+
+    <!-- 스텝 3: 전공 -->
+    <div class="step-content hidden" id="step3">
+        <div class="step-title">전공 분야를<br>알려주세요</div>
+        <div class="step-subtitle">직무 분야 판단을 위해 필요한 정보입니다</div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="majorInput" placeholder="전공을 입력해주세요" maxlength="30">
+                <div class="input-line"></div>
+            </div>
+            <div class="char-count">
+                <span id="majorCount">0</span> / 30
+            </div>
+        </div>
+
+        <div class="button-section">
+            <button class="btn btn-back" id="backBtn3">이전</button>
+            <button class="btn btn-next" id="nextBtn3" disabled>다음</button>
+        </div>
+    </div>
+
+    <!-- 스텝 4: 최종학력 -->
+    <div class="step-content hidden" id="step4">
+        <div class="step-title">최종학력을<br>알려주세요</div>
+        <div class="step-subtitle">학력에 맞는 자기소개서 형식을 추천해드릴게요</div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="educationInput" placeholder="최종학력을 입력해주세요" maxlength="50">
+                <div class="input-line"></div>
+            </div>
+            <div class="char-count">
+                <span id="educationCount">0</span> / 50
+            </div>
+        </div>
+
+        <div class="button-section">
+            <button class="btn btn-back" id="backBtn4">이전</button>
+            <button class="btn btn-next" id="nextBtn4" disabled>다음</button>
+        </div>
+    </div>
+
+    <!-- 스텝 5: 계정 설정 -->
+    <div class="step-content hidden" id="step5">
+        <div class="step-title">계정을<br>설정해주세요</div>
+        <div class="step-subtitle">JGenie 서비스 이용을 위한 계정 정보입니다</div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="아이디를 입력해주세요" maxlength="20">
+                <div class="input-line"></div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="passwordInput" placeholder="비밀번호를 입력해주세요" maxlength="30">
+                <div class="input-line"></div>
+            </div>
+
+            <div class="password-requirements">
+                <div class="requirement-item">
+                    <div class="requirement-check" id="lengthCheck"></div>
+                    <span>8자 이상</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="requirement-check" id="letterCheck"></div>
+                    <span>영문 포함</span>
+                </div>
+                <div class="requirement-item">
+                    <div class="requirement-check" id="numberCheck"></div>
+                    <span>숫자 포함</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-section">
+            <button class="btn btn-back" id="backBtn5">이전</button>
+            <button class="btn btn-next" id="nextBtn5" disabled>회원가입 완료</button>
+        </div>
+    </div>
+
+    <!-- 완료 화면 -->
+    <div class="step-content welcome-screen hidden" id="welcomeScreen">
+        <div class="welcome-icon"></div>
+        <div class="step-title">회원가입이<br>완료되었습니다!</div>
+        <div class="step-subtitle">이제 맞춤형 자기소개서를 작성해보세요</div>
+
+        <div class="button-section">
+            <button class="btn btn-next" id="startBtn">시작하기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    // DOM 요소들
+    const progressFill = document.getElementById('progressFill');
+    const stepCounter = document.getElementById('stepCounter');
+
+    // 입력 필드들
+    const nameInput = document.getElementById('nameInput');
+    const ageInput = document.getElementById('ageInput');
+    const majorInput = document.getElementById('majorInput');
+    const educationInput = document.getElementById('educationInput');
+    const usernameInput = document.getElementById('usernameInput');
+    const passwordInput = document.getElementById('passwordInput');
+
+    // 프로그레스 바 업데이트
+    function updateProgress() {
+        const progress = (currentStep / totalSteps) * 100;
+        progressFill.style.width = progress + '%';
+        stepCounter.textContent = `${currentStep} / ${totalSteps}`;
+    }
+
+    // 스텝 전환 함수
+    function showStep(stepNumber) {
+        // 현재 스텝 숨기기
+        const currentStepEl = document.getElementById(`step${currentStep}`);
+        if (currentStepEl) {
+            currentStepEl.classList.add('hidden');
+        }
+
+        // 새 스텝 보여주기
+        if (stepNumber <= totalSteps) {
+            const newStepEl = document.getElementById(`step${stepNumber}`);
+            if (newStepEl) {
+                newStepEl.classList.remove('hidden');
+                // 스텝 전환 시 초기 애니메이션 클래스 추가 (초기 로딩 애니메이션 방지)
+                newStepEl.classList.add('step-transition');
+            }
+            currentStep = stepNumber;
+            updateProgress();
+        } else {
+            // 완료 화면 표시
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            welcomeScreen.classList.remove('hidden');
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.querySelector('.step-counter').style.display = 'none';
+        }
+    }
+
+    // 입력 검증 및 버튼 활성화
+    function validateInput(input, button, validator = null) {
+        let isValid = false;
+
+        if (validator) {
+            isValid = validator(input.value);
+        } else {
+            isValid = input.value.trim().length > 0;
+        }
+
+        button.disabled = !isValid;
+    }
+
+    // 나이 검증
+    function validateAge(value) {
+        const age = parseInt(value);
+        return age >= 15 && age <= 80;
+    }
+
+    // 비밀번호 검증
+    function validatePassword(password) {
+        const lengthValid = password.length >= 8;
+        const letterValid = /[a-zA-Z]/.test(password);
+        const numberValid = /[0-9]/.test(password);
+
+        // 각 요구사항 체크 업데이트
+        document.getElementById('lengthCheck').classList.toggle('valid', lengthValid);
+        document.getElementById('letterCheck').classList.toggle('valid', letterValid);
+        document.getElementById('numberCheck').classList.toggle('valid', numberValid);
+
+        return lengthValid && letterValid && numberValid;
+    }
+
+    // 계정 설정 검증
+    function validateAccount() {
+        const usernameValid = usernameInput.value.trim().length >= 4;
+        const passwordValid = validatePassword(passwordInput.value);
+        const button = document.getElementById('nextBtn5');
+        button.disabled = !(usernameValid && passwordValid);
+    }
+
+    // 문자 수 카운터 업데이트
+    function updateCharCount(input, countElement) {
+        if (countElement) {
+            countElement.textContent = input.value.length;
+        }
+    }
+
+    // 이벤트 리스너 설정
+    nameInput.addEventListener('input', () => {
+        updateCharCount(nameInput, document.getElementById('nameCount'));
+        validateInput(nameInput, document.getElementById('nextBtn1'));
+    });
+
+    ageInput.addEventListener('input', () => {
+        validateInput(ageInput, document.getElementById('nextBtn2'), validateAge);
+    });
+
+    majorInput.addEventListener('input', () => {
+        updateCharCount(majorInput, document.getElementById('majorCount'));
+        validateInput(majorInput, document.getElementById('nextBtn3'));
+    });
+
+    educationInput.addEventListener('input', () => {
+        updateCharCount(educationInput, document.getElementById('educationCount'));
+        validateInput(educationInput, document.getElementById('nextBtn4'));
+    });
+
+    usernameInput.addEventListener('input', validateAccount);
+    passwordInput.addEventListener('input', validateAccount);
+
+    // 다음 버튼 이벤트
+    document.getElementById('nextBtn1').addEventListener('click', () => showStep(2));
+    document.getElementById('nextBtn2').addEventListener('click', () => showStep(3));
+    document.getElementById('nextBtn3').addEventListener('click', () => showStep(4));
+    document.getElementById('nextBtn4').addEventListener('click', () => showStep(5));
+    document.getElementById('nextBtn5').addEventListener('click', () => showStep(6));
+
+    // 이전 버튼 이벤트
+    document.getElementById('backBtn2').addEventListener('click', () => showStep(1));
+    document.getElementById('backBtn3').addEventListener('click', () => showStep(2));
+    document.getElementById('backBtn4').addEventListener('click', () => showStep(3));
+    document.getElementById('backBtn5').addEventListener('click', () => showStep(4));
+
+    // 시작하기 버튼
+    document.getElementById('startBtn').addEventListener('click', () => {
+        alert('로그인 페이지로 이동합니다!');
+    });
+
+    // 입력 필드 포커스 효과
+    const allInputs = document.querySelectorAll('input');
+    allInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'translateY(-2px)';
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'translateY(0)';
+        });
+    });
+</script>
+</body>
+</html>
