@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JGenie - 홈</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 70px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 메인 컨테이너 */
+        .main-container {
+            padding: 16px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* 헤더 영역 */
+        .header {
+            margin-bottom: 40px;
+            padding-top: 8px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .welcome-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 400;
+            line-height: 1.4;
+            letter-spacing: -0.01em;
+        }
+
+        /* 기업 목록 섹션 */
+        .companies-section {
+            margin-bottom: 48px;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .companies-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50vw;
+            right: -50vw;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+
+        .section-title {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        .companies-grid {
+            position: relative;
+            height: 136px;
+            overflow: hidden;
+            margin: 0 -16px;
+        }
+
+        .companies-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 16px;
+            will-change: transform;
+        }
+
+        .companies-container.scrolling {
+            animation: infiniteFlow 60s linear infinite;
+        }
+
+        @keyframes infiniteFlow {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .companies-container.paused {
+            animation-play-state: paused;
+        }
+
+        .company-row {
+            display: flex;
+            gap: 8px;
+            min-width: 100%;
+        }
+
+        .company-item {
+            flex: 0 0 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .company-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .company-item:active {
+            transform: scale(0.98);
+        }
+
+        .company-placeholder {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            letter-spacing: -0.01em;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        /* AI 분석 섹션 */
+        .analysis-section {
+            margin-bottom: 20px;
+        }
+
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .analysis-header {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .analysis-title {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin-bottom: 4px;
+        }
+
+        .analysis-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.75rem;
+            font-weight: 400;
+        }
+
+        .analysis-placeholder {
+            text-align: center;
+            padding: 16px;
+        }
+
+        .analysis-placeholder-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            letter-spacing: -0.01em;
+        }
+
+        /* 분석 시작 버튼 */
+        .analysis-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: bounce 2s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+        }
+
+        .analysis-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+            animation-play-state: paused;
+        }
+
+        .analysis-button:active {
+            transform: scale(0.95);
+            animation-play-state: paused;
+        }
+
+        .analysis-button::before {
+            content: '?';
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-4px);
+            }
+            60% {
+                transform: translateY(-2px);
+            }
+        }
+
+        /* 하단 네비게이션 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 0 6px 0;
+            z-index: 100;
+            height: 60px;
+        }
+
+        .nav-container {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100%;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            text-decoration: none;
+            min-width: 44px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        /* 홈 아이콘 (심플한 원형) */
+        .nav-icon.home::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+
+        .nav-icon.home::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+
+        .nav-item.active .nav-icon.home::before {
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item.active .nav-icon.home::after {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 검색 아이콘 */
+        .nav-icon.search::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 10px;
+            height: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+
+        .nav-icon.search::after {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 5px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.7);
+            transform: rotate(45deg);
+        }
+
+        .nav-item.active .nav-icon.search::before {
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item.active .nav-icon.search::after {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 커리어 아이콘 */
+        .nav-icon.career::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 7px;
+            width: 10px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 1px;
+        }
+
+        .nav-icon.career::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 9px;
+            width: 6px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow:
+                0 2px 0 rgba(255, 255, 255, 0.7),
+                0 4px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-item.active .nav-icon.career::before {
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-item.active .nav-icon.career::after {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 2px 0 rgba(255, 255, 255, 0.95),
+                0 4px 0 rgba(255, 255, 255, 0.95);
+        }
+
+        /* 프로필 아이콘 */
+        .nav-icon.profile::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 9px;
+            width: 6px;
+            height: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+        }
+
+        .nav-icon.profile::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 6px;
+            width: 12px;
+            height: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .nav-item.active .nav-icon.profile::before,
+        .nav-item.active .nav-icon.profile::after {
+            border-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .nav-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-item.active .nav-label {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* 배경 파티클 효과 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-12px) rotate(180deg);
+                opacity: 0.25;
+            }
+        }
+
+        /* 스크롤 그라데이션 힌트 */
+        .companies-grid::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to left, rgba(102, 126, 234, 0.4), transparent);
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .companies-grid.scrolling::after {
+            opacity: 1;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 360px) {
+            .main-container {
+                padding: 14px;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .welcome-text {
+                font-size: 0.85rem;
+            }
+
+            .company-item {
+                flex: 0 0 55px;
+                height: 55px;
+            }
+
+            .company-placeholder {
+                font-size: 0.6rem;
+            }
+
+            .analysis-card {
+                padding: 18px;
+            }
+
+            .nav-item {
+                padding: 4px 8px;
+                min-width: 40px;
+            }
+
+            .nav-icon {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        /* 접근성 개선 */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 배경 파티클 -->
+<div class="particles" id="particles"></div>
+
+<!-- 메인 컨테이너 -->
+<div class="main-container">
+    <!-- 헤더 -->
+    <header class="header">
+        <h1 class="logo">JGenie</h1>
+        <p class="welcome-text">자소서, 이제 고민하지 마세요<br>AI가 기업별 맞춤형 완벽한 자기소개서를 만들어드려요</p>
+    </header>
+
+    <!-- 기업 목록 섹션 -->
+    <section class="companies-section">
+        <h2 class="section-title">등록된 기업</h2>
+        <div class="companies-grid" id="companiesGrid">
+            <div class="companies-container" id="companiesContainer">
+                <div class="company-row" id="companyRow1"></div>
+                <div class="company-row" id="companyRow2"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI 분석 섹션 -->
+    <section class="analysis-section">
+        <h2 class="section-title">AI 커리어 분석</h2>
+        <div class="analysis-card">
+            <div class="analysis-header">
+                <button class="analysis-button" id="analysisBtn"></button>
+                <h3 class="analysis-title">맞춤 분석 결과</h3>
+                <p class="analysis-subtitle">커리어 강점 및 개선점 분석</p>
+            </div>
+            <div class="analysis-placeholder">
+                <p class="analysis-placeholder-text">
+                    커리어 정보를 등록하시면<br>
+                    AI가 당신의 강점과 개선점을<br>
+                    자세히 분석해드립니다
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 하단 네비게이션 -->
+<nav class="bottom-nav">
+    <div class="nav-container">
+        <a href="/" class="nav-item active">
+            <div class="nav-icon home"></div>
+            <span class="nav-label">홈</span>
+        </a>
+        <a href="/search" class="nav-item">
+            <div class="nav-icon search"></div>
+            <span class="nav-label">검색</span>
+        </a>
+        <a href="/career" class="nav-item">
+            <div class="nav-icon career"></div>
+            <span class="nav-label">커리어</span>
+        </a>
+        <a href="/profile" class="nav-item">
+            <div class="nav-icon profile"></div>
+            <span class="nav-label">프로필</span>
+        </a>
+    </div>
+</nav>
+
+<script>
+    // 배경 파티클 생성
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 10;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // 기업 데이터 렌더링 및 스크롤 처리
+    function renderCompanies(companiesData) {
+        const row1 = document.getElementById('companyRow1');
+        const row2 = document.getElementById('companyRow2');
+        const companiesContainer = document.getElementById('companiesContainer');
+        const companiesGrid = document.getElementById('companiesGrid');
+
+        // 데이터를 2줄로 나누기
+        const midPoint = Math.ceil(companiesData.length / 2);
+        const firstRowData = companiesData.slice(0, midPoint);
+        const secondRowData = companiesData.slice(midPoint);
+
+        // 첫 번째 줄 렌더링
+        renderRow(row1, firstRowData);
+        // 두 번째 줄 렌더링
+        renderRow(row2, secondRowData);
+
+        // 스크롤 필요성 확인 및 적용
+        checkAndApplyScroll(row1, companiesContainer, companiesGrid);
+    }
+
+    function renderRow(rowElement, data) {
+        rowElement.innerHTML = '';
+
+        // 원본 데이터 렌더링
+        data.forEach(company => {
+            const item = document.createElement('div');
+            item.className = 'company-item';
+            item.innerHTML = `<div class="company-placeholder">${company.name}</div>`;
+            item.addEventListener('click', () => {
+                console.log('기업 클릭:', company.name);
+            });
+            rowElement.appendChild(item);
+        });
+    }
+
+    function checkAndApplyScroll(sampleRow, container, grid) {
+        const containerWidth = container.parentElement.offsetWidth;
+        const rowWidth = sampleRow.scrollWidth;
+
+        // 요소가 화면을 넘치는 경우에만 스크롤 적용
+        if (rowWidth > containerWidth) {
+            // 무한 스크롤을 위해 복제본 추가
+            const rows = container.querySelectorAll('.company-row');
+            rows.forEach(row => {
+                const originalItems = Array.from(row.children);
+                originalItems.forEach(item => {
+                    const clone = item.cloneNode(true);
+                    clone.addEventListener('click', () => {
+                        const companyName = clone.querySelector('.company-placeholder').textContent;
+                        console.log('기업 클릭:', companyName);
+                    });
+                    row.appendChild(clone);
+                });
+            });
+
+            // 스크롤 애니메이션 적용
+            container.classList.add('scrolling');
+            grid.classList.add('scrolling');
+
+            // 사용자 상호작용 이벤트 적용
+            applyUserInteraction(container, grid);
+        }
+    }
+
+    function applyUserInteraction(container, grid) {
+        let resumeTimeout;
+
+        // 터치/마우스 이벤트 리스너
+        grid.addEventListener('mouseenter', () => pauseAutoScroll(container));
+        grid.addEventListener('mouseleave', () => resumeAutoScroll(container));
+        grid.addEventListener('touchstart', () => pauseAutoScroll(container));
+        grid.addEventListener('touchend', () => {
+            clearTimeout(resumeTimeout);
+            resumeTimeout = setTimeout(() => resumeAutoScroll(container), 2000);
+        });
+
+        function pauseAutoScroll(container) {
+            container.style.animationPlayState = 'paused';
+        }
+
+        function resumeAutoScroll(container) {
+            container.style.animationPlayState = 'running';
+        }
+    }
+
+    // 서버에서 기업 데이터 가져오기
+    function fetchCompaniesData() {
+        // 실제로는 서버 API 호출
+        // return fetch('/api/companies').then(res => res.json());
+
+        // 임시 데이터
+        return Promise.resolve([
+            { name: '삼성전자' },
+            { name: 'LG전자' },
+            { name: '현대자동차' },
+            { name: 'SK하이닉스' },
+            { name: '포스코' },
+            { name: '한화시스템' },
+            { name: '롯데' },
+            { name: 'GS칼텍스' },
+            { name: '네이버' },
+            { name: '카카오' },
+            { name: '쿠팡' },
+            { name: '배달의민족' },
+            { name: '토스' },
+            { name: '당근마켓' },
+            { name: '야놀자' },
+            { name: '무신사' }
+        ]);
+    }
+
+    // 분석 버튼 클릭 이벤트
+    const analysisBtn = document.getElementById('analysisBtn');
+    if (analysisBtn) {
+        analysisBtn.addEventListener('click', function() {
+            this.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+
+            console.log('AI 분석 시작 버튼 클릭');
+        });
+    }
+
+    // 네비게이션 아이템 클릭 이벤트
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (this.classList.contains('active')) {
+                e.preventDefault();
+                return;
+            }
+
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // 페이지 로드 시 초기화
+    window.addEventListener('load', () => {
+        createParticles();
+
+        // 기업 데이터 가져와서 렌더링
+        fetchCompaniesData().then(companies => {
+            renderCompanies(companies);
+        });
+    });
+</script>
+</body>
+</html>

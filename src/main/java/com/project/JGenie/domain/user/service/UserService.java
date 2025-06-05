@@ -1,6 +1,8 @@
 package com.project.JGenie.domain.user.service;
 
+import com.project.JGenie.domain.user.dto.LoginDto;
 import com.project.JGenie.domain.user.dto.UserDto;
+import com.project.JGenie.domain.user.entity.UserEntity;
 import com.project.JGenie.domain.user.repository.UserRepository;
 import com.project.JGenie.global.common.util.SecurityUtil;
 import jakarta.servlet.http.HttpSession;
@@ -44,5 +46,23 @@ public class UserService {
             session.setAttribute("id", userDto.getId()); // 세션에 아이디 저장
             userRepository.save(userDto.toEntity());
         }
+    }
+
+    public void userLogin(LoginDto loginDto) {
+        if(!userRepository.existsById(loginDto.getId())) {
+            throw new RuntimeException("아이디가 존재하지 않습니다.");
+        } else {
+            UserEntity userEntity = findUser(loginDto.getId());
+            if(!BCrypt.checkpw(loginDto.getPassword(), userEntity.getPassword())) {
+                throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            } else {
+                // 로그인 성공
+                session.setAttribute("id", userEntity.getId()); // 세션에 아이디 저장
+            }
+        }
+    }
+
+    public UserEntity findUser(String id) {
+        return userRepository.findById(id).orElse(null);
     }
 }

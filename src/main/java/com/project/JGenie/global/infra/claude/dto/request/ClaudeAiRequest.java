@@ -2,7 +2,7 @@ package com.project.JGenie.global.infra.claude.dto.request;
 
 import com.project.JGenie.domain.company.entity.CompanyEntity;
 import com.project.JGenie.domain.coverletter.entity.SampleCoverLetterEntity;
-import com.project.JGenie.domain.user.entity.UserCareerEntity;
+import com.project.JGenie.domain.career.entity.UserCareerEntity;
 import com.project.JGenie.domain.user.entity.UserEntity;
 import lombok.Builder;
 import lombok.Getter;

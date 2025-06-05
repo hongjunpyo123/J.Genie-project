@@ -1,7 +1,6 @@
 package com.project.JGenie.domain.user.controller;
 
 import com.project.JGenie.domain.user.service.UserService;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
