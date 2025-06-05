@@ -287,9 +287,18 @@
             content: '✓';
         }
 
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            text-align: center;
+            margin-bottom: 16px;
+            display: none;
+        }
+
         .button-section {
             margin-top: auto;
             display: flex;
+            flex-direction: column;
             gap: 12px;
             /* 버튼 섹션 애니메이션 */
             opacity: 0;
@@ -302,6 +311,11 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
         }
 
         .btn {
@@ -511,14 +525,16 @@
         </div>
 
         <div class="button-section">
-            <button class="btn btn-back" id="backBtn2">이전</button>
-            <button class="btn btn-next" id="nextBtn2" disabled>다음</button>
+            <div class="button-row">
+                <button class="btn btn-back" id="backBtn2">이전</button>
+                <button class="btn btn-next" id="nextBtn2" disabled>다음</button>
+            </div>
         </div>
     </div>
 
     <!-- 스텝 3: 전공 -->
     <div class="step-content hidden" id="step3">
-        <div class="step-title">전공 분야를<br>알려주세요</div>
+        <div class="step-title">전공을<br>알려주세요</div>
         <div class="step-subtitle">직무 분야 판단을 위해 필요한 정보입니다</div>
 
         <div class="input-section">
@@ -532,8 +548,10 @@
         </div>
 
         <div class="button-section">
-            <button class="btn btn-back" id="backBtn3">이전</button>
-            <button class="btn btn-next" id="nextBtn3" disabled>다음</button>
+            <div class="button-row">
+                <button class="btn btn-back" id="backBtn3">이전</button>
+                <button class="btn btn-next" id="nextBtn3" disabled>다음</button>
+            </div>
         </div>
     </div>
 
@@ -553,8 +571,10 @@
         </div>
 
         <div class="button-section">
-            <button class="btn btn-back" id="backBtn4">이전</button>
-            <button class="btn btn-next" id="nextBtn4" disabled>다음</button>
+            <div class="button-row">
+                <button class="btn btn-back" id="backBtn4">이전</button>
+                <button class="btn btn-next" id="nextBtn4" disabled>다음</button>
+            </div>
         </div>
     </div>
 
@@ -576,6 +596,10 @@
 
             <div class="password-requirements">
                 <div class="requirement-item">
+                    <div class="requirement-check" id="usernameCheck"></div>
+                    <span>사용 가능한 아이디</span>
+                </div>
+                <div class="requirement-item">
                     <div class="requirement-check" id="lengthCheck"></div>
                     <span>8자 이상</span>
                 </div>
@@ -591,8 +615,11 @@
         </div>
 
         <div class="button-section">
-            <button class="btn btn-back" id="backBtn5">이전</button>
-            <button class="btn btn-next" id="nextBtn5" disabled>회원가입 완료</button>
+            <div class="error-message" id="signupError">회원가입에 실패했습니다.</div>
+            <div class="button-row">
+                <button class="btn btn-back" id="backBtn5">이전</button>
+                <button class="btn btn-next" id="nextBtn5" disabled>회원가입 완료</button>
+            </div>
         </div>
     </div>
 
@@ -611,6 +638,7 @@
 <script>
     let currentStep = 1;
     const totalSteps = 5;
+    let isUsernameValid = false;
 
     // DOM 요소들
     const progressFill = document.getElementById('progressFill');
@@ -677,6 +705,32 @@
         return age >= 15 && age <= 80;
     }
 
+    // 아이디 중복 검사
+    async function checkUsernameAvailability(username) {
+        if (username.trim().length < 4) {
+            isUsernameValid = false;
+            document.getElementById('usernameCheck').classList.remove('valid');
+            validateAccount();
+            return;
+        }
+
+        try {
+            const response = await fetch(`/valid/${username}`);
+            if (response.status === 200) {
+                isUsernameValid = true;
+                document.getElementById('usernameCheck').classList.add('valid');
+            } else {
+                isUsernameValid = false;
+                document.getElementById('usernameCheck').classList.remove('valid');
+            }
+        } catch (error) {
+            isUsernameValid = false;
+            document.getElementById('usernameCheck').classList.remove('valid');
+        }
+
+        validateAccount();
+    }
+
     // 비밀번호 검증
     function validatePassword(password) {
         const lengthValid = password.length >= 8;
@@ -693,7 +747,7 @@
 
     // 계정 설정 검증
     function validateAccount() {
-        const usernameValid = usernameInput.value.trim().length >= 4;
+        const usernameValid = usernameInput.value.trim().length >= 4 && isUsernameValid;
         const passwordValid = validatePassword(passwordInput.value);
         const button = document.getElementById('nextBtn5');
         button.disabled = !(usernameValid && passwordValid);
@@ -703,6 +757,35 @@
     function updateCharCount(input, countElement) {
         if (countElement) {
             countElement.textContent = input.value.length;
+        }
+    }
+
+    // 회원가입 API 호출
+    async function submitSignup() {
+        const signupData = {
+            id: usernameInput.value.trim(),
+            password: passwordInput.value,
+            name: nameInput.value.trim(),
+            age: ageInput.value,
+            major: majorInput.value.trim()
+        };
+
+        try {
+            const response = await fetch('/user/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(signupData)
+            });
+
+            if (response.status === 200) {
+                showStep(6);
+            } else {
+                document.getElementById('signupError').style.display = 'block';
+            }
+        } catch (error) {
+            document.getElementById('signupError').style.display = 'block';
         }
     }
 
@@ -726,15 +809,24 @@
         validateInput(educationInput, document.getElementById('nextBtn4'));
     });
 
-    usernameInput.addEventListener('input', validateAccount);
-    passwordInput.addEventListener('input', validateAccount);
+    usernameInput.addEventListener('input', () => {
+        checkUsernameAvailability(usernameInput.value);
+        // 에러 메시지 숨기기
+        document.getElementById('signupError').style.display = 'none';
+    });
+
+    passwordInput.addEventListener('input', () => {
+        validateAccount();
+        // 에러 메시지 숨기기
+        document.getElementById('signupError').style.display = 'none';
+    });
 
     // 다음 버튼 이벤트
     document.getElementById('nextBtn1').addEventListener('click', () => showStep(2));
     document.getElementById('nextBtn2').addEventListener('click', () => showStep(3));
     document.getElementById('nextBtn3').addEventListener('click', () => showStep(4));
     document.getElementById('nextBtn4').addEventListener('click', () => showStep(5));
-    document.getElementById('nextBtn5').addEventListener('click', () => showStep(6));
+    document.getElementById('nextBtn5').addEventListener('click', submitSignup);
 
     // 이전 버튼 이벤트
     document.getElementById('backBtn2').addEventListener('click', () => showStep(1));
@@ -744,7 +836,7 @@
 
     // 시작하기 버튼
     document.getElementById('startBtn').addEventListener('click', () => {
-        alert('로그인 페이지로 이동합니다!');
+        window.location.href = '/main';
     });
 
     // 입력 필드 포커스 효과
