@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>JGenie - 로그인</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -11,20 +11,26 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 16px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
             overflow-x: hidden;
             opacity: 0;
             animation: fadeIn 0.6s ease-out forwards;
             position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         @keyframes fadeIn {
@@ -44,8 +50,8 @@
 
         .neon-light {
             position: absolute;
-            width: 200px;
-            height: 200px;
+            width: clamp(150px, 40vw, 200px);
+            height: clamp(150px, 40vw, 200px);
             border-radius: 50%;
             background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.08) 50%, transparent 80%);
             animation: neonFloat 8s ease-in-out infinite;
@@ -54,14 +60,14 @@
 
         .neon-light:nth-child(1) {
             top: 10%;
-            left: -50px;
+            left: -25%;
             animation-delay: 0s;
             animation-duration: 12s;
         }
 
         .neon-light:nth-child(2) {
             bottom: 20%;
-            right: -50px;
+            right: -25%;
             animation-delay: 3s;
             animation-duration: 10s;
         }
@@ -72,8 +78,8 @@
             transform: translate(-50%, -50%);
             animation-delay: 6s;
             animation-duration: 14s;
-            width: 300px;
-            height: 300px;
+            width: clamp(200px, 50vw, 300px);
+            height: clamp(200px, 50vw, 300px);
         }
 
         @keyframes neonFloat {
@@ -107,8 +113,8 @@
 
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: clamp(3px, 1vw, 4px);
+            height: clamp(3px, 1vw, 4px);
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             animation: float 6s ease-in-out infinite;
@@ -134,8 +140,8 @@
 
         .login-container {
             width: 100%;
-            max-width: 380px;
-            padding: 0 20px;
+            max-width: clamp(320px, 90vw, 380px);
+            padding: 0 clamp(16px, 4vw, 20px);
             opacity: 0;
             transform: translateY(20px);
             animation: slideUp 0.7s ease-out 0.2s forwards;
@@ -158,13 +164,13 @@
 
         .logo {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: clamp(40px, 10vw, 60px);
             opacity: 0;
             animation: fadeIn 0.5s ease-out 0.5s forwards;
         }
 
         .logo h1 {
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 8vw, 3.5rem);
             font-weight: 600;
             background: linear-gradient(135deg,
                 rgba(255, 255, 255, 0.95) 0%,
@@ -203,14 +209,14 @@
 
         .logo p {
             color: rgba(255, 255, 255, 0.85);
-            font-size: 1rem;
+            font-size: clamp(0.85rem, 3.5vw, 1rem);
             font-weight: 400;
             letter-spacing: 0.01em;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .form-group {
-            margin-bottom: 32px;
+            margin-bottom: clamp(24px, 6vw, 32px);
             position: relative;
             opacity: 0;
             transform: translateY(15px);
@@ -235,31 +241,33 @@
         .form-group label {
             display: block;
             color: rgba(255, 255, 255, 0.9);
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 3vw, 0.95rem);
             font-weight: 400;
-            margin-bottom: 12px;
+            margin-bottom: clamp(8px, 3vw, 12px);
             transition: color 0.2s ease;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .form-group input {
             width: 100%;
-            padding: 20px 0;
+            padding: clamp(16px, 4vw, 20px) 0;
             border: none;
             border-bottom: 2px solid rgba(255, 255, 255, 0.3);
             background: transparent;
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
             font-weight: 400;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
             color: rgba(255, 255, 255, 0.95);
             font-family: inherit;
+            touch-action: manipulation;
         }
 
         .form-group input::placeholder {
             color: rgba(255, 255, 255, 0.5);
             font-weight: 300;
             transition: all 0.3s ease;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
         }
 
         .form-group input:focus {
@@ -275,7 +283,7 @@
 
         .login-btn {
             width: 100%;
-            padding: 20px;
+            padding: clamp(16px, 4vw, 20px);
             background: linear-gradient(145deg,
                 rgba(102, 126, 234, 0.4) 0%,
                 rgba(118, 75, 162, 0.3) 50%,
@@ -283,13 +291,13 @@
             border: 2px solid rgba(102, 126, 234, 0.5);
             border-radius: 50px;
             color: rgba(255, 255, 255, 0.98);
-            font-size: 1.1rem;
+            font-size: clamp(1rem, 4vw, 1.1rem);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            margin: 50px 0 0;
+            margin: clamp(30px, 8vw, 50px) 0 0;
             letter-spacing: 0.3px;
             backdrop-filter: blur(20px);
             opacity: 0;
@@ -300,6 +308,8 @@
                 0 5px 20px rgba(118, 75, 162, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            touch-action: manipulation;
+            min-height: 44px;
         }
 
         .login-btn::before {
@@ -355,7 +365,7 @@
 
         .error-message {
             color: #ff6b6b;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 3vw, 0.9rem);
             text-align: center;
             margin-top: 20px;
             opacity: 0;
@@ -371,18 +381,19 @@
 
         .signup-section {
             text-align: center;
-            margin-top: 40px;
+            margin-top: clamp(30px, 8vw, 40px);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: clamp(6px, 2vw, 8px);
             opacity: 0;
             animation: fadeIn 0.4s ease-out 1.1s forwards;
+            flex-wrap: wrap;
         }
 
         .signup-text {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 3vw, 0.95rem);
             font-weight: 400;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
@@ -391,14 +402,18 @@
             background: transparent;
             border: none;
             color: rgba(255, 255, 255, 0.95);
-            padding: 6px 12px;
+            padding: clamp(6px, 2vw, 6px) clamp(10px, 3vw, 12px);
             border-radius: 6px;
-            font-size: 0.95rem;
+            font-size: clamp(0.85rem, 3vw, 0.95rem);
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            touch-action: manipulation;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
 
         .signup-btn:hover {
@@ -409,50 +424,60 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
-        @media (max-width: 480px) {
+        /* 작은 모바일 화면 대응 */
+        @media (max-width: 375px) {
             .login-container {
-                padding: 0 16px;
-            }
-
-            .logo h1 {
-                font-size: 3rem;
-            }
-
-            .logo {
-                margin-bottom: 50px;
-            }
-
-            .logo p {
-                font-size: 0.9rem;
-            }
-
-            .form-group input {
-                padding: 18px 0;
-                font-size: 16px;
-            }
-
-            .login-btn {
-                padding: 18px;
-                font-size: 1rem;
+                padding: 0 12px;
             }
 
             .signup-section {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
+            }
+        }
+
+        /* 매우 작은 화면 대응 */
+        @media (max-width: 320px) {
+            .login-container {
+                padding: 0 10px;
             }
 
-            .signup-btn {
-                padding: 10px 16px;
+            .form-group {
+                margin-bottom: 20px;
             }
 
-            .particle {
-                width: 3px;
-                height: 3px;
+            .signup-section {
+                margin-top: 25px;
+            }
+        }
+
+        /* 큰 모바일/태블릿 대응 */
+        @media (min-width: 768px) {
+            .login-container {
+                max-width: 420px;
+            }
+        }
+
+        /* iOS Safari 특화 */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+        }
+
+        /* 터치 디바이스 전용 스타일 */
+        @media (hover: none) and (pointer: coarse) {
+            .login-btn:hover {
+                transform: none;
+                background: linear-gradient(145deg,
+                    rgba(102, 126, 234, 0.4) 0%,
+                    rgba(118, 75, 162, 0.3) 50%,
+                    rgba(102, 126, 234, 0.3) 100%);
             }
 
-            .neon-light {
-                width: 150px;
-                height: 150px;
+            .signup-btn:hover {
+                background: transparent;
+                text-decoration: none;
             }
         }
 

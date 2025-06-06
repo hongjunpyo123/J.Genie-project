@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>JGenie - 내 자기소개서</title>
+
+    <!-- PDF 생성 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 배경 파티클 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.1;
+            }
+            50% {
+                transform: translateY(-10px) rotate(180deg);
+                opacity: 0.25;
+            }
+        }
+
+        /* 헤더 */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 16px;
+            padding-top: max(12px, env(safe-area-inset-top));
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg,
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.1) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            touch-action: manipulation;
+            position: relative;
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 52%;
+            width: 10px;
+            height: 10px;
+            border-left: 2px solid rgba(255, 255, 255, 0.9);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.9);
+            transform: translate(-50%, -50%) rotate(45deg);
+            transition: all 0.2s ease;
+        }
+
+        .back-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.9);
+            transform: translate(-40%, -50%);
+            border-radius: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .back-button:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .header-title {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* 메인 컨테이너 */
+        .main-container {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 자기소개서 그리드 */
+        .coverletters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-bottom: 20px;
+        }
+
+        .coverletter-card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(15px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease-out forwards;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .coverletter-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .card-header {
+            margin-bottom: 8px;
+        }
+
+        .card-date {
+            display: none;
+        }
+
+        .card-title {
+            display: none;
+        }
+
+        .card-preview {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.8rem;
+            line-height: 1.4;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            margin-bottom: 8px;
+            flex: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: auto;
+        }
+
+        .card-id {
+            display: none;
+        }
+
+        .read-more {
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.7) 100%);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 로딩 상태 */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            opacity: 0.8;
+        }
+
+        /* 모달 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .modal-close:active {
+            background: rgba(0, 0, 0, 0.15);
+            transform: scale(0.95);
+        }
+
+        .modal-close::before {
+            content: '×';
+            font-size: 18px;
+            color: rgba(0, 0, 0, 0.7);
+            font-weight: 300;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: rgba(0, 0, 0, 0.9);
+            margin-bottom: 4px;
+            padding-right: 50px;
+            background: linear-gradient(135deg,
+                rgba(102, 126, 234, 0.9) 0%,
+                rgba(118, 75, 162, 0.8) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 0 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .coverletter-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: rgba(0, 0, 0, 0.8);
+            white-space: pre-wrap;
+            word-break: keep-all;
+            padding: 16px 0;
+        }
+
+        .coverletter-content h1,
+        .coverletter-content h2,
+        .coverletter-content h3 {
+            color: rgba(0, 0, 0, 0.9);
+            font-weight: 800;
+            margin: 24px 0 12px;
+        }
+
+        .coverletter-content h2 {
+            font-size: 1.1rem;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            padding-bottom: 8px;
+            background: linear-gradient(135deg,
+                rgba(102, 126, 234, 0.9) 0%,
+                rgba(118, 75, 162, 0.8) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .coverletter-content p {
+            margin-bottom: 16px;
+        }
+
+        .coverletter-content strong {
+            color: rgba(102, 126, 234, 0.9);
+            font-weight: 700;
+            background: rgba(102, 126, 234, 0.08);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .modal-actions {
+            padding: 16px 20px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+            background: rgba(248, 250, 252, 0.5);
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-copy {
+            background: rgba(102, 126, 234, 0.1);
+            color: rgba(102, 126, 234, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-copy:active {
+            background: rgba(102, 126, 234, 0.15);
+            transform: scale(0.98);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-download:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 토스트 */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            z-index: 2000;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            max-width: calc(100vw - 40px);
+            text-align: center;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* 모바일 최적화 */
+        @media (max-width: 375px) {
+            .main-container {
+                padding: 12px;
+            }
+
+            .coverletters-grid {
+                gap: 10px;
+            }
+
+            .coverletter-card {
+                padding: 12px;
+                min-height: 120px;
+            }
+
+            .card-preview {
+                font-size: 0.75rem;
+                -webkit-line-clamp: 3;
+            }
+
+            .read-more {
+                font-size: 0.75rem;
+                padding: 6px 10px;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-actions {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .btn {
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* 큰 화면 대응 */
+        @media (min-width: 768px) {
+            .modal-overlay {
+                align-items: center;
+                padding: 20px;
+            }
+
+            .modal-content {
+                border-radius: 20px;
+                max-width: 600px;
+                max-height: 80vh;
+                transform: translateY(30px) scale(0.9);
+            }
+
+            .modal-overlay.active .modal-content {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* iOS Safari 대응 */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+        }
+
+        /* 접근성 */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 배경 파티클 -->
+<div class="particles" id="particles"></div>
+
+<!-- 헤더 -->
+<header class="header">
+    <button class="back-button" id="backButton"></button>
+    <h1 class="header-title">내 자기소개서</h1>
+</header>
+
+<!-- 메인 컨테이너 -->
+<div class="main-container">
+    <!-- 로딩 상태 -->
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">자기소개서를 불러오는 중...</div>
+    </div>
+
+    <!-- 자기소개서 그리드 -->
+    <div class="coverletters-grid" id="coverlettersGrid" style="display: none;">
+    </div>
+
+    <!-- 빈 상태 -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-title">작성된 자기소개서가 없습니다</div>
+        <div class="empty-description">첫 번째 자기소개서를 작성해보세요</div>
+    </div>
+</div>
+
+<!-- 자기소개서 상세보기 모달 -->
+<div class="modal-overlay" id="coverletterModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button class="modal-close" id="modalClose"></button>
+            <h2 class="modal-title" id="modalTitle">자기소개서</h2>
+        </div>
+        <div class="modal-body">
+            <div class="coverletter-content" id="modalContent"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-copy" id="copyBtn">
+                복사하기
+            </button>
+            <button class="btn btn-download" id="downloadBtn">
+                PDF 다운로드
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 토스트 메시지 -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // 전역 변수
+    let coverlettersData = [];
+    let selectedCoverletter = null;
+
+    // 배경 파티클 생성
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 12;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // API에서 자기소개서 데이터 가져오기
+    async function fetchCoverletters() {
+        try {
+            const response = await fetch('/coverletters/user');
+            if (!response.ok) {
+                throw new Error('자기소개서를 불러올 수 없습니다.');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('API 호출 오류:', error);
+            throw error;
+        }
+    }
+
+    // 마크다운을 HTML로 변환
+    function parseMarkdown(markdown) {
+        let html = markdown;
+
+        // 헤딩 변환
+        html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+
+        // 볼드 변환
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // 대괄호 강조
+        html = html.replace(/\[(.*?)\]/g, '<strong>$1</strong>');
+
+        // 줄바꿈 변환
+        html = html.replace(/\n\n/g, '</p><p>');
+        html = '<p>' + html + '</p>';
+
+        // 빈 p 태그 제거
+        html = html.replace(/<p><\/p>/g, '');
+        html = html.replace(/<p>\s*<\/p>/g, '');
+
+        return html;
+    }
+
+    // 미리보기 텍스트 추출
+    function getPreviewText(content) {
+        let preview = content
+            .replace(/#{1,6}\s/g, '')
+            .replace(/\*\*(.*?)\*\*/g, '$1')
+            .replace(/\[(.*?)\]/g, '$1')
+            .replace(/\n+/g, ' ')
+            .trim();
+
+        return preview.length > 150 ? preview.substring(0, 150) + '...' : preview;
+    }
+
+    // 날짜 포맷팅
+    function formatDate(id) {
+        const date = new Date();
+        date.setDate(date.getDate() - (id % 30));
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    // 자기소개서 카드 렌더링
+    function renderCoverletters(coverletters) {
+        const grid = document.getElementById('coverlettersGrid');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        loadingContainer.style.display = 'none';
+
+        if (coverletters.length === 0) {
+            emptyState.style.display = 'block';
+            return;
+        }
+
+        grid.innerHTML = '';
+        coverletters.forEach((coverletter, index) => {
+            const card = document.createElement('div');
+            card.className = 'coverletter-card';
+            card.style.animationDelay = `${index * 0.1}s`;
+
+            const preview = getPreviewText(coverletter.userCoverLetterContent);
+            const date = formatDate(coverletter.id);
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <div class="card-date">${date}</div>
+                    <div class="card-title">자기소개서 #${coverletter.id}</div>
+                </div>
+                <div class="card-preview">${preview}</div>
+                <div class="card-footer">
+                    <div class="card-id">ID: ${coverletter.id}</div>
+                    <div class="read-more">자세히 보기</div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                openCoverletterModal(coverletter);
+            });
+
+            grid.appendChild(card);
+        });
+
+        grid.style.display = 'grid';
+    }
+
+    // 모달 열기
+    function openCoverletterModal(coverletter) {
+        selectedCoverletter = coverletter;
+
+        document.getElementById('modalTitle').textContent = `내 자기소개서`;
+
+        const htmlContent = parseMarkdown(coverletter.userCoverLetterContent);
+        document.getElementById('modalContent').innerHTML = htmlContent;
+
+        const modal = document.getElementById('coverletterModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // 모달 닫기
+    function closeCoverletterModal() {
+        const modal = document.getElementById('coverletterModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        selectedCoverletter = null;
+    }
+
+    // 토스트 메시지 표시
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // 클립보드 복사
+    async function copyToClipboard() {
+        if (!selectedCoverletter) return;
+
+        try {
+            await navigator.clipboard.writeText(selectedCoverletter.userCoverLetterContent);
+            showToast('자기소개서가 클립보드에 복사되었습니다');
+        } catch (error) {
+            console.error('복사 실패:', error);
+            showToast('복사에 실패했습니다');
+        }
+    }
+
+    // PDF 다운로드 (브라우저 인쇄 기능 사용)
+    async function downloadAsPDF() {
+        if (!selectedCoverletter) return;
+
+        try {
+            // 새 창에서 인쇄용 페이지 생성
+            const printWindow = window.open('', '_blank');
+
+            const content = selectedCoverletter.userCoverLetterContent;
+            const htmlContent = parseMarkdown(content);
+            const date = formatDate(selectedCoverletter.id);
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="ko">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>자기소개서 - Cover Letter #${selectedCoverletter.id}</title>
+                    <style>
+                        @page {
+                            margin: 2cm;
+                            size: A4;
+                        }
+
+                        body {
+                            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+                            font-size: 12pt;
+                            line-height: 1.6;
+                            color: #333;
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                            border-bottom: 2px solid #667eea;
+                            padding-bottom: 20px;
+                        }
+
+                        .title {
+                            font-size: 24pt;
+                            font-weight: bold;
+                            color: #667eea;
+                            margin-bottom: 10px;
+                        }
+
+                        .date {
+                            font-size: 11pt;
+                            color: #666;
+                        }
+
+                        .content {
+                            margin-bottom: 30px;
+                        }
+
+                        .content h1, .content h2, .content h3 {
+                            color: #667eea;
+                            font-weight: bold;
+                            margin: 20px 0 10px 0;
+                            page-break-after: avoid;
+                        }
+
+                        .content h2 {
+                            font-size: 14pt;
+                            border-bottom: 1px solid #667eea;
+                            padding-bottom: 5px;
+                        }
+
+                        .content p {
+                            margin: 0 0 12px 0;
+                            text-align: justify;
+                            orphans: 2;
+                            widows: 2;
+                        }
+
+                        .content strong {
+                            color: #667eea;
+                            font-weight: bold;
+                        }
+
+                        .footer {
+                            position: fixed;
+                            bottom: 1cm;
+                            right: 1cm;
+                            font-size: 9pt;
+                            color: #999;
+                        }
+
+                        @media print {
+                            body {
+                                -webkit-print-color-adjust: exact;
+                                print-color-adjust: exact;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="title">자기소개서</div>
+                    </div>
+
+                    <div class="content">
+                        ${htmlContent}
+                    </div>
+
+                    <div class="footer">
+                        JGenie - AI Cover Letter Generator
+                    </div>
+                </body>
+                </html>
+            `);
+
+            printWindow.document.close();
+
+            // 페이지 로드 완료 후 인쇄 대화상자 열기
+            printWindow.onload = function() {
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            };
+
+            showToast('PDF 다운로드를 위해 인쇄 대화상자를 엽니다');
+
+        } catch (error) {
+            console.error('PDF 생성 실패:', error);
+            showToast('PDF 생성에 실패했습니다');
+        }
+    }
+
+    // 이벤트 리스너
+    document.getElementById('backButton').addEventListener('click', () => {
+        window.location.href = '/main/home';
+    });
+
+    document.getElementById('modalClose').addEventListener('click', closeCoverletterModal);
+
+    document.getElementById('coverletterModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCoverletterModal();
+        }
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+    document.getElementById('downloadBtn').addEventListener('click', downloadAsPDF);
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeCoverletterModal();
+        }
+    });
+
+    // 페이지 로드 시 초기화
+    window.addEventListener('load', async () => {
+        createParticles();
+
+        try {
+            const coverletters = await fetchCoverletters();
+            coverlettersData = coverletters;
+            renderCoverletters(coverletters);
+        } catch (error) {
+            console.error('자기소개서 로드 실패:', error);
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="loading-text" style="color: #ff6b6b;">
+                    자기소개서를 불러오는데 실패했습니다<br>
+                    <small style="font-size: 0.8em; margin-top: 8px; display: block;">잠시 후 다시 시도해주세요</small>
+                </div>
+            `;
+        }
+    });
+</script>
+</body>
+</html>

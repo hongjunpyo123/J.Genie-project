@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "회사")
+@Table(name = "기업")
 public class CompanyEntity {
 
     @Id
@@ -24,4 +24,7 @@ public class CompanyEntity {
 
     @Column(length = 255)
     private String industryType; // 산업 유형 (예: IT, 제조업 등)
+
+    @Column(length = 255)
+    private String talentProfile; // 인재상
 }

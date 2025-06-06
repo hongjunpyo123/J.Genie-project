@@ -35,7 +35,8 @@ public class UserCareerEntity {
     @Column(length = 255)
     private String careerTitle;
 
-    @Column(length = 1000)
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String careerContent;
 
 }
