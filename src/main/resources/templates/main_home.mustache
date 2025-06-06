@@ -22,8 +22,6 @@
             overflow-x: hidden;
             overflow-y: hidden;
             padding-bottom: 0;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease-out forwards;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -50,6 +48,8 @@
             overflow-x: hidden; /* 추가 */
             overflow-y: auto;
             box-sizing: border-box;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
         }
 
         /* 헤더 영역 */
@@ -112,7 +112,7 @@
 
         .companies-grid {
             position: relative;
-            height: clamp(160px, 40vw, 180px);
+            height: 180px;
             overflow: hidden;
             margin: 0 -16px;
             width: 100%;
@@ -281,6 +281,84 @@
             60% {
                 transform: translateY(-2px);
             }
+        }
+
+        /* 로딩 오버레이 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-logo {
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .loading-spinner {
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .loading-message.fade-out {
+            opacity: 0;
+        }
+
+        .loading-submessage {
+            font-size: clamp(0.75rem, 3vw, 0.85rem);
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
         }
 
         /* 모달 스타일 */
@@ -930,6 +1008,16 @@
 <!-- 배경 파티클 -->
 <div class="particles" id="particles"></div>
 
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="loading-logo">JGenie</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-message" id="loadingMessage">JGenie가 자기소개서를 작성중이에요!</div>
+        <div class="loading-submessage">조금만 기다려주세요</div>
+    </div>
+</div>
+
 <!-- 메인 컨테이너 -->
 <div class="main-container">
     <!-- 헤더 -->
@@ -1059,7 +1147,7 @@
             <span class="main-button-text">자소서</span>
         </button>
 
-        <a href="/career" class="nav-item">
+        <a href="/home/career" class="nav-item">
             <div class="nav-icon career"></div>
             <span class="nav-label">커리어</span>
         </a>
@@ -1074,6 +1162,52 @@
     // 전역 변수
     let companiesData = [];
     let selectedCompany = null;
+
+    // 로딩 메시지 배열
+    const loadingMessages = [
+        'JGenie가 자기소개서를 작성중이에요!',
+        '사용자님의 커리어를 검토중이에요!',
+        '조금만 기다려주세요!',
+        '맞춤형 자기소개서를 준비하고 있어요!'
+    ];
+
+    let loadingMessageIndex = 0;
+    let loadingMessageInterval;
+
+    // 로딩 화면 표시
+    function showLoading() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        loadingOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // 부드러운 메시지 순환 표시
+        loadingMessageInterval = setInterval(() => {
+            // 페이드 아웃
+            loadingMessage.classList.add('fade-out');
+
+            setTimeout(() => {
+                // 메시지 변경
+                loadingMessageIndex = (loadingMessageIndex + 1) % loadingMessages.length;
+                loadingMessage.textContent = loadingMessages[loadingMessageIndex];
+
+                // 페이드 인
+                loadingMessage.classList.remove('fade-out');
+            }, 500); // 페이드 아웃 완료 후 메시지 변경
+        }, 3500); // 3.5초마다 메시지 변경 (이전 2초에서 증가)
+    }
+
+    // 로딩 화면 숨기기
+    function hideLoading() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        if (loadingMessageInterval) {
+            clearInterval(loadingMessageInterval);
+        }
+    }
 
     // 배경 파티클 생성
     function createParticles() {
@@ -1266,11 +1400,12 @@
         e.preventDefault();
 
         const formData = new FormData(this);
-        const submitButton = document.getElementById('modalWrite');
 
-        // 버튼 비활성화 및 로딩 상태 표시
-        submitButton.disabled = true;
-        submitButton.textContent = 'AI 분석 중...';
+        // 모달 닫기
+        closeCompanyModal();
+
+        // 로딩 화면 표시
+        showLoading();
 
         try {
             // /coverletter/ai로 POST 요청
@@ -1299,11 +1434,8 @@
 
         } catch (error) {
             console.error('AI 분석 오류:', error);
+            hideLoading(); // 로딩 화면 숨기기
             alert('AI 분석 중 오류가 발생했습니다. 다시 시도해주세요.');
-
-            // 버튼 상태 복원
-            submitButton.disabled = false;
-            submitButton.textContent = '자기소개서 작성';
         }
     });
 

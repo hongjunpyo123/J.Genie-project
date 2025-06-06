@@ -4,6 +4,7 @@ import com.project.JGenie.domain.career.dto.UserCareerDto;
 import com.project.JGenie.domain.career.entity.UserCareerEntity;
 import com.project.JGenie.domain.career.repository.UserCareerRepository;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,5 +35,20 @@ public class UserCareerService {
 
     public List<UserCareerEntity> getUserCareers() {
         return userCareerRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteUserCaree(Long id) {
+
+        if(!userCareerRepository.existsByCareerId(id) || session.getAttribute("id") == null) {
+            throw new RuntimeException("허용되지 않은 요청입니다");
+        }
+
+        UserCareerEntity userCareer = userCareerRepository.findById(id).orElse(null);
+
+        if(!session.getAttribute("id").toString().equals(userCareer.getUserId())) {
+            throw new RuntimeException("자신의 경력 정보만 삭제할 수 있습니다.");
+        }
+            userCareerRepository.deleteById(id);
     }
 }

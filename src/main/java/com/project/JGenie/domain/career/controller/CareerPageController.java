@@ -1,24 +1,26 @@
-package com.project.JGenie.domain.coverletter.controller;
+package com.project.JGenie.domain.career.controller;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class CoverletterPageController {
+@Slf4j
+public class CareerPageController {
 
     private final HttpSession session;
 
-    public CoverletterPageController(HttpSession session) {
+    public CareerPageController(HttpSession session) {
         this.session = session;
     }
 
-    @GetMapping("/coverletter")
-    public String coverletterPage() {
+    @GetMapping("/home/career")
+    public String careerPage() {
         if (session.getAttribute("id") == null) {
             return "err";
         }
-        return "user_cover_letter";
+        return "main_career";
     }
+
 }
