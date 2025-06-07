@@ -32,7 +32,7 @@ public class UserCareerEntity {
     //프로젝트/성과
     //기타
 
-    @Column(length = 255)
+    @Column(length = 2000)
     private String careerTitle;
 
     @Lob

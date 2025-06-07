@@ -23,6 +23,10 @@ public class ExampleCoverLetterService {
 
 
     public void registerExampleCoverLetter(ExampleCoverLetterDto exampleCoverLetterDto) throws RuntimeException{
+        if(session.getAttribute("id") == null || !session.getAttribute("id").equals("0721hjp")) {
+            log.error("잘못된 요청입니다");
+            throw new RuntimeException("잘못된 요청입니다.");
+        }
         exampleCoverLetterRepository.save(exampleCoverLetterDto.toEntity());
     }
 
