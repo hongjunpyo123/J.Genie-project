@@ -18,7 +18,7 @@ public class SecurityConfig {
                         , "/careers/**", "/valid/**", "/user", "/server/status", "/coverletters/user", "/coverletters/**", "/coverletter/**"
                         , "/", "/login", "/main/**", "/signup", "/user/signup", "/user/logout", "/user/delete-account"
                         , "/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**", "/favicon.ico"
-                        /*, "/swagger-ui/**", "/v3/api-docs/**"*/)
+                        , "/swagger-ui/**", "/v3/api-docs/**")
                         .permitAll()
                         .anyRequest().denyAll());
         return http.build();
