@@ -739,6 +739,10 @@
 
             if (response.status === 200) {
                 showToast('자기소개서가 성공적으로 삭제되었습니다');
+                // 로딩 상태 다시 표시
+                document.getElementById('loadingContainer').style.display = 'flex';
+                document.getElementById('coverlettersGrid').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
                 // API 재호출로 데이터 업데이트
                 fetchAndRenderCoverletters();
             } else {
