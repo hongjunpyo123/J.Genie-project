@@ -7,11 +7,15 @@ spring.datasource.username=
 spring.datasource.password=
 spring.jpa.hibernate.ddl-auto=update
 
-#anthropic
+#anthropic claude-sonnet-4-20250514
 spring.ai.anthropic.api-key=
 spring.ai.anthropic.chat.options.model=claude-sonnet-4-20250514
 spring.ai.anthropic.chat.options.temperature=0.7
 spring.ai.anthropic.chat.options.max-tokens=4000
+
+# Gemini
+gemini.url=https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent
+gemini.key=
 
 #Security
 encrypt.key=

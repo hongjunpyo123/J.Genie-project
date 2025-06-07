@@ -14,6 +14,7 @@ import com.project.JGenie.domain.user.repository.UserRepository;
 import com.project.JGenie.global.common.util.SecurityUtil;
 import com.project.JGenie.global.infra.claude.ClaudeAiClient;
 import com.project.JGenie.global.infra.claude.dto.request.ClaudeAiRequest;
+import com.project.JGenie.global.infra.gemini.GeminiClient;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
@@ -33,6 +34,7 @@ public class CoverLetterAiService {
     private final CompanyRepository companyRepository;
     private final SecurityUtil securityUtil;
     private final ClaudeAiClient claudeAiClient;
+    private final GeminiClient geminiClient;
     private final HttpSession session;
     private final UserCareerService userCareerService;
 
@@ -41,6 +43,7 @@ public class CoverLetterAiService {
                                  UserCareerRepository userCareerRepository,
                                  SecurityUtil securityUtil,
                                  ClaudeAiClient claudeAiClient,
+                                GeminiClient geminiClient,
                                 UserCoverLetterRepository userCoverLetterRepository,
                                  HttpSession session,
                                  CompanyRepository companyRepository,
@@ -50,6 +53,7 @@ public class CoverLetterAiService {
         this.userCareerRepository = userCareerRepository;
         this.securityUtil = securityUtil;
         this.claudeAiClient = claudeAiClient;
+        this.geminiClient = geminiClient;
         this.userCoverLetterRepository = userCoverLetterRepository;
         this.companyRepository = companyRepository;
         this.session = session;
@@ -94,7 +98,8 @@ public class CoverLetterAiService {
                 .question3(coverLetterAiRequest.getQuestion3())
                 .build();
 
-        claudeAiClient.AIgenerateCoverLetter(claudeAiRequest);
+        claudeAiClient.AIgenerateCoverLetter(claudeAiRequest); //클로드 모델
+        //geminiClient.AIgenerateCoverLetter(claudeAiRequest); //제미나이 모델
 
     }
 }
