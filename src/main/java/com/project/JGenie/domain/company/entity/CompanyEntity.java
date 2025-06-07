@@ -25,6 +25,7 @@ public class CompanyEntity {
     @Column(length = 255)
     private String industryType; // 산업 유형 (예: IT, 제조업 등)
 
-    @Column(length = 255)
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String talentProfile; // 인재상
 }
