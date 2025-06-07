@@ -42,8 +42,8 @@ public class UserCoverLetterService {
 
     @Transactional
     public void deleteUserCoverLetter(Long id) {
-        if (!userCoverLetterRepository.existsById(id)) {
-            throw new RuntimeException("해당 커버레터 정보가 존재하지 않습니다.");
+        if (!userCoverLetterRepository.existsById(id) || session.getAttribute("id") == null) {
+            throw new RuntimeException("잘못된 요청입니다");
         } else {
             userCoverLetterRepository.deleteById(id);
         }
