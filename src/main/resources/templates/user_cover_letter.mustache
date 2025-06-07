@@ -175,6 +175,48 @@
             flex-direction: column;
         }
 
+        /* 삭제 버튼 스타일 */
+        .delete-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            touch-action: manipulation;
+            z-index: 10;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.8);
+            border-color: rgba(239, 68, 68, 1);
+            transform: scale(1.1);
+        }
+
+        .delete-btn:active {
+            transform: scale(0.9);
+        }
+
+        .delete-btn::before {
+            content: '×';
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .delete-btn:hover::before {
+            color: white;
+        }
+
         @keyframes slideUp {
             to {
                 opacity: 1;
@@ -688,7 +730,27 @@
         }
     }
 
-    // 마크다운을 HTML로 변환
+    // 자기소개서 삭제 함수
+    async function deleteCoverletter(coverletterid) {
+        try {
+            const response = await fetch(`/coverletter/${coverletterid}`, {
+                method: 'DELETE'
+            });
+
+            if (response.status === 200) {
+                showToast('자기소개서가 성공적으로 삭제되었습니다');
+                // API 재호출로 데이터 업데이트
+                const coverletters = await fetchCoverletters();
+                coverlettersData = coverletters;
+                renderCoverletters(coverletters);
+            } else {
+                showToast('삭제에 실패했습니다');
+            }
+        } catch (error) {
+            console.error('자기소개서 삭제 오류:', error);
+            showToast('삭제에 실패했습니다');
+        }
+    }
     function parseMarkdown(markdown) {
         let html = markdown;
 
@@ -765,6 +827,7 @@
             const isFirst = index === 0;
 
             card.innerHTML = `
+                <button class="delete-btn" onclick="deleteCoverletter(${coverletter.id})"></button>
                 <div class="card-header">
                     <div class="card-date">${date}</div>
                     <div class="card-title">자기소개서 #${coverletter.id}</div>
@@ -778,7 +841,12 @@
                 </div>
             `;
 
-            card.addEventListener('click', () => {
+            card.addEventListener('click', (e) => {
+                // 삭제 버튼 클릭 시에는 모달 열지 않음
+                if (e.target.classList.contains('delete-btn')) {
+                    e.stopPropagation();
+                    return;
+                }
                 openCoverletterModal(coverletter);
             });
 
