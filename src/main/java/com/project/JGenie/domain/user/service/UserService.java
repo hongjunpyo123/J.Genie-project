@@ -1,11 +1,14 @@
 package com.project.JGenie.domain.user.service;
 
+import com.project.JGenie.domain.career.repository.UserCareerRepository;
+import com.project.JGenie.domain.coverletter.repository.UserCoverLetterRepository;
 import com.project.JGenie.domain.user.dto.LoginDto;
 import com.project.JGenie.domain.user.dto.UserDto;
 import com.project.JGenie.domain.user.entity.UserEntity;
 import com.project.JGenie.domain.user.repository.UserRepository;
 import com.project.JGenie.global.common.util.SecurityUtil;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +16,18 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserCoverLetterRepository userCoverLetterRepository;
+    private final UserCareerRepository userCareerRepository;
     private final SecurityUtil securityUtil;
     private final HttpSession session;
 
-    public UserService(UserRepository userRepository, SecurityUtil securityUtil, HttpSession session) {
+    public UserService(UserRepository userRepository, SecurityUtil securityUtil, HttpSession session
+    , UserCoverLetterRepository userCoverLetterRepository, UserCareerRepository userCareerRepository) {
         this.userRepository = userRepository;
         this.securityUtil = securityUtil;
         this.session = session;
+        this.userCoverLetterRepository = userCoverLetterRepository;
+        this.userCareerRepository = userCareerRepository;
     }
 
     public boolean isValidId(String id) {
@@ -65,4 +73,42 @@ public class UserService {
     public UserEntity findUser(String id) {
         return userRepository.findById(id).orElse(null);
     }
+
+    public UserEntity findByUserId(String userId) {
+            UserEntity user = userRepository.findById(userId).orElse(null);
+
+            return UserEntity.builder()
+                    .id(user.getId())
+                    .name(securityUtil.decrypt(user.getName()))
+                    .age(securityUtil.decrypt(user.getAge()))
+                    .major(securityUtil.decrypt(user.getMajor()))
+                    .build();
+    }
+
+    @Transactional
+    public void deleteAccount(String userId) {
+        if(!userRepository.existsById(userId)) {
+            throw new RuntimeException("아이디가 존재하지 않습니다.");
+        } else {
+            userCoverLetterRepository.deleteByUserId(userId);
+            userCareerRepository.deleteByUserId(userId);
+            userRepository.deleteById(userId);
+            session.invalidate(); // 세션 무효화
+        }
+    }
+
+    @Transactional
+    public void updateUser(UserDto userDto) {
+        if(session.getAttribute("id") == null || !session.getAttribute("id").equals(userDto.getId()) || !userRepository.existsById(userDto.getId())) {
+            throw new RuntimeException("비정상적인 요청");
+        }
+        UserEntity userEntity = userRepository.findById(userDto.getId()).orElse(null);
+        userEntity.setPassword(BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt()));
+        userEntity.setName(securityUtil.encrypt(userDto.getName()));
+        userEntity.setAge(securityUtil.encrypt(userDto.getAge()));
+        userEntity.setMajor(securityUtil.encrypt(userDto.getMajor()));
+
+        userRepository.save(userEntity);
+    }
+
 }

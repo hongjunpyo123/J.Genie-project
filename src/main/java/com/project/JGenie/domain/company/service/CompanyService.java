@@ -34,4 +34,12 @@ public class CompanyService {
 
         companyRepository.save(companyDto.toEntity());
     }
+
+    public List<CompanyEntity> findByCompanyNameContaining(String companyName) {
+        if(session.getAttribute("id") == null) {
+            throw new RuntimeException("허용되지 않은 요청입니다");
+        }
+
+        return companyRepository.findByCompanyNameContaining(companyName);
+    }
 }

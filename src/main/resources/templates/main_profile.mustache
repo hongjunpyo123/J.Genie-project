@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JGenie - 커리어</title>
+    <title>JGenie - 프로필</title>
     <style>
         * {
             margin: 0;
@@ -83,43 +83,8 @@
             letter-spacing: -0.01em;
         }
 
-        /* 추가 버튼 */
-        .add-career-btn {
-            width: clamp(36px, 9vw, 40px);
-            height: clamp(36px, 9vw, 40px);
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            touch-action: manipulation;
-            margin-top: 8px;
-        }
-
-        .add-career-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
-        }
-
-        .add-career-btn:active {
-            transform: scale(0.95);
-        }
-
-        .add-career-btn::before {
-            content: '+';
-            color: rgba(255, 255, 255, 0.9);
-            font-size: clamp(1.2rem, 4vw, 1.4rem);
-            font-weight: 600;
-            line-height: 1;
-        }
-
-        /* 커리어 섹션 */
-        .careers-section {
+        /* 프로필 섹션 */
+        .profile-section {
             margin-bottom: clamp(24px, 6vw, 48px);
         }
 
@@ -131,70 +96,14 @@
             letter-spacing: -0.01em;
         }
 
-        .careers-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .career-item {
+        .profile-card {
             background: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             padding: clamp(16px, 4vw, 20px);
             backdrop-filter: blur(15px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
             animation: slideInUp 0.5s ease-out;
-            position: relative;
-        }
-
-        .career-item:hover {
-            background: rgba(255, 255, 255, 0.18);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        /* 삭제 버튼 스타일 */
-        .delete-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 24px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-            touch-action: manipulation;
-        }
-
-        .delete-btn:hover {
-            background: rgba(239, 68, 68, 0.8);
-            border-color: rgba(239, 68, 68, 1);
-            transform: scale(1.1);
-        }
-
-        .delete-btn:active {
-            transform: scale(0.9);
-        }
-
-        .delete-btn::before {
-            content: '×';
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1;
-        }
-
-        .delete-btn:hover::before {
-            color: white;
         }
 
         @keyframes slideInUp {
@@ -208,38 +117,148 @@
             }
         }
 
-        .career-header {
+        .profile-avatar {
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .profile-avatar::after {
+            content: 'JGenie';
+            font-size: clamp(0.7rem, 3vw, 0.8rem);
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .profile-name-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .profile-name {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: clamp(1.1rem, 4vw, 1.3rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        /* 편집 버튼 */
+        .edit-profile-btn {
+            width: clamp(32px, 8vw, 36px);
+            height: clamp(32px, 8vw, 36px);
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            touch-action: manipulation;
+        }
+
+        .edit-profile-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .edit-profile-btn:active {
+            transform: scale(0.95);
+        }
+
+        .edit-profile-btn::before {
+            content: '수정';
+            font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .career-type {
-            background: rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.9);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: clamp(0.65rem, 2.5vw, 0.7rem);
-            font-weight: 600;
-            letter-spacing: -0.01em;
+        .info-row:last-child {
+            border-bottom: none;
         }
 
-        .career-title {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: clamp(0.9rem, 3.5vw, 1rem);
-            font-weight: 600;
-            margin-bottom: 8px;
-            letter-spacing: -0.01em;
-            line-height: 1.3;
-            padding-right: 36px;
-        }
-
-        .career-content {
+        .info-label {
             color: rgba(255, 255, 255, 0.8);
             font-size: clamp(0.75rem, 3vw, 0.8rem);
-            line-height: 1.5;
+            font-weight: 500;
             letter-spacing: -0.01em;
+        }
+
+        .info-value {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: clamp(0.8rem, 3vw, 0.85rem);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        /* 로그아웃 버튼 */
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: clamp(0.7rem, 2.5vw, 0.75rem);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .logout-btn:hover {
+            background: rgba(107, 114, 128, 0.1);
+        }
+
+        .logout-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 계정 삭제 버튼 */
+        .delete-account-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: clamp(0.7rem, 2.5vw, 0.75rem);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .delete-account-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .delete-account-btn:active {
+            transform: scale(0.95);
         }
 
         /* 빈 상태 */
@@ -375,18 +394,6 @@
             letter-spacing: -0.01em;
         }
 
-        .form-select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 8px;
-            font-size: clamp(0.75rem, 3vw, 0.8rem);
-            font-family: inherit;
-            color: rgba(0, 0, 0, 0.8);
-            background: rgba(102, 126, 234, 0.03);
-            transition: all 0.2s ease;
-        }
-
         .form-input {
             width: 100%;
             padding: 12px;
@@ -399,34 +406,22 @@
             transition: all 0.2s ease;
         }
 
-        .form-textarea {
-            width: 100%;
-            min-height: clamp(80px, 20vw, 100px);
-            padding: 12px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 8px;
-            font-size: clamp(0.75rem, 3vw, 0.8rem);
-            font-family: inherit;
-            color: rgba(0, 0, 0, 0.8);
-            background: rgba(102, 126, 234, 0.03);
-            resize: vertical;
-            transition: all 0.2s ease;
-        }
-
-        .form-select:focus,
-        .form-input:focus,
-        .form-textarea:focus {
+        .form-input:focus {
             outline: none;
             border-color: rgba(102, 126, 234, 0.5);
             background: rgba(102, 126, 234, 0.08);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .form-select::placeholder,
-        .form-input::placeholder,
-        .form-textarea::placeholder {
+        .form-input::placeholder {
             color: rgba(0, 0, 0, 0.4);
             font-size: clamp(0.7rem, 2.5vw, 0.75rem);
+        }
+
+        .password-field {
+            color: rgba(0, 0, 0, 0.4);
+            font-size: clamp(0.75rem, 3vw, 0.8rem);
+            letter-spacing: 0.1em;
         }
 
         .modal-actions {
@@ -483,50 +478,6 @@
             font-size: clamp(0.7rem, 2.5vw, 0.75rem);
             margin-top: 8px;
             text-align: center;
-        }
-
-        /* 말풍선 알림 */
-        .bubble-notification {
-            position: absolute;
-            top: -45px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            color: rgba(102, 126, 234, 0.9);
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: clamp(0.65rem, 2.5vw, 0.7rem);
-            font-weight: 600;
-            white-space: nowrap;
-            animation: bubbleBounce 2s ease-in-out infinite;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            pointer-events: none;
-        }
-
-        .bubble-notification::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid rgba(255, 255, 255, 0.95);
-        }
-
-        @keyframes bubbleBounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            40% {
-                transform: translateX(-50%) translateY(-3px);
-            }
-            60% {
-                transform: translateX(-50%) translateY(-1px);
-            }
         }
 
         /* 알림 토스트 */
@@ -657,6 +608,49 @@
             color: white;
             font-weight: 600;
             letter-spacing: -0.01em;
+        }
+
+        /* 말풍선 알림 */
+        .bubble-notification {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: rgba(102, 126, 234, 0.9);
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: clamp(0.65rem, 2.5vw, 0.7rem);
+            font-weight: 600;
+            white-space: nowrap;
+            animation: bubbleBounce 2s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .bubble-notification::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(255, 255, 255, 0.95);
+        }
+
+        @keyframes bubbleBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-3px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-1px);
+            }
         }
 
         /* 홈 아이콘 */
@@ -896,79 +890,120 @@
     <header class="header">
         <div class="header-content">
             <h1 class="logo">JGenie</h1>
-            <p class="welcome-text">나의 커리어를 체계적으로 관리하고<br>성장 과정을 기록해보세요</p>
+            <p class="welcome-text">안녕하세요, <span id="userName">사용자</span>님!<br>프로필 정보를 관리해보세요</p>
         </div>
-        <button class="add-career-btn" id="addCareerBtn"></button>
     </header>
 
-    <!-- 커리어 섹션 -->
-    <section class="careers-section">
-        <h2 class="section-title">나의 커리어</h2>
-        <div class="careers-stack" id="careersStack">
-            <!-- 커리어 아이템들이 여기에 렌더링됩니다 -->
+    <!-- 프로필 섹션 -->
+    <section class="profile-section">
+        <h2 class="section-title">내 프로필</h2>
+        <div class="profile-card" id="profileCard">
+            <div class="profile-avatar"></div>
+            <div class="profile-name-container">
+                <div class="profile-name" id="profileName">사용자</div>
+                <button class="edit-profile-btn" id="editProfileBtn" style="display: none;"></button>
+            </div>
+            <div class="profile-info">
+                <div class="info-row">
+                    <span class="info-label">아이디</span>
+                    <span class="info-value" id="profileId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">나이</span>
+                    <span class="info-value" id="profileAge">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">전공</span>
+                    <span class="info-value" id="profileMajor">-</span>
+                </div>
+            </div>
         </div>
 
         <!-- 빈 상태 -->
         <div class="empty-state" id="emptyState" style="display: none;">
-            <div class="empty-icon">📋</div>
-            <div class="empty-text">아직 등록된 커리어가 없어요</div>
-            <div class="empty-subtext">우측 상단의 + 버튼을 눌러 첫 커리어를 추가해보세요</div>
+            <div class="empty-icon"></div>
+            <div class="empty-text">프로필 정보를 불러올 수 없습니다</div>
+            <div class="empty-subtext">잠시 후 다시 시도해주세요</div>
+        </div>
+
+        <!-- 계정 관리 버튼들 (섹션 밖) -->
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 16px;">
+            <button class="logout-btn" id="logoutBtn" style="display: none;">로그아웃</button>
+            <button class="delete-account-btn" id="deleteAccountBtn2" style="display: none;">계정삭제</button>
         </div>
     </section>
 </div>
 
-<!-- 커리어 추가 모달 -->
-<div class="modal-overlay" id="careerModal">
+<!-- 프로필 편집 모달 -->
+<div class="modal-overlay" id="profileModal">
     <div class="modal-content">
         <button class="modal-close" id="modalClose"></button>
         <div class="modal-header">
-            <h2 class="modal-title">새 커리어 추가</h2>
-            <p class="modal-subtitle">나의 성취와 경험을 기록해보세요</p>
+            <h2 class="modal-title">내 정보 수정</h2>
+            <p class="modal-subtitle">프로필 정보를 업데이트해보세요</p>
         </div>
 
-        <form id="careerForm">
+        <form id="profileForm">
             <div class="form-group">
-                <label class="form-label" for="careerType">커리어 타입</label>
-                <select class="form-select" id="careerType" name="careerType" required>
-                    <option value="">타입을 선택해주세요</option>
-                    <option value="학력">학력</option>
-                    <option value="경력">경력</option>
-                    <option value="경험/활동">경험/활동</option>
-                    <option value="교육/훈련">교육/훈련</option>
-                    <option value="자격/어학">자격/어학</option>
-                    <option value="수상">수상</option>
-                    <option value="스킬/역량">스킬/역량</option>
-                    <option value="프로젝트/성과">프로젝트/성과</option>
-                    <option value="기타">기타</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="careerTitle">커리어 제목</label>
+                <label class="form-label" for="editId">아이디</label>
                 <input
                         type="text"
                         class="form-input"
-                        id="careerTitle"
-                        name="careerTitle"
-                        placeholder="예: ~~해커톤 참여, 토익 900점 취득 등"
+                        id="editId"
+                        name="id"
+                        placeholder="아이디를 입력해주세요"
                         required>
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="careerContent">상세 내용</label>
-                <textarea
-                        class="form-textarea"
-                        id="careerContent"
-                        name="careerContent"
-                        placeholder="커리어에 대한 자세한 내용을 작성해주세요. 성과, 배운점, 역할 등을 구체적으로 기록하면 좋습니다."
-                        required></textarea>
+                <label class="form-label" for="editPassword">비밀번호</label>
+                <input
+                        type="password"
+                        class="form-input password-field"
+                        id="editPassword"
+                        name="password"
+                        placeholder="새 비밀번호를 입력해주세요 (선택사항)"
+                        value="★★★★★★">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editName">이름</label>
+                <input
+                        type="text"
+                        class="form-input"
+                        id="editName"
+                        name="name"
+                        placeholder="이름을 입력해주세요"
+                        required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editAge">나이</label>
+                <input
+                        type="text"
+                        class="form-input"
+                        id="editAge"
+                        name="age"
+                        placeholder="나이를 입력해주세요"
+                        required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editMajor">전공</label>
+                <input
+                        type="text"
+                        class="form-input"
+                        id="editMajor"
+                        name="major"
+                        placeholder="전공을 입력해주세요"
+                        required>
             </div>
 
             <div class="error-message" id="errorMessage" style="display: none;"></div>
 
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" id="modalCancel">취소</button>
-                <button type="submit" class="btn btn-primary" id="modalSubmit">등록하기</button>
+                <button type="submit" class="btn btn-primary" id="modalSubmit">수정하기</button>
             </div>
         </form>
     </div>
@@ -995,11 +1030,11 @@
             <span class="main-button-text">자소서</span>
         </button>
 
-        <a href="/main/career" class="nav-item active">
+        <a href="/main/career" class="nav-item">
             <div class="nav-icon career"></div>
             <span class="nav-label">커리어</span>
         </a>
-        <a href="/main/profile" class="nav-item">
+        <a href="/main/profile" class="nav-item active">
             <div class="nav-icon profile"></div>
             <span class="nav-label">프로필</span>
         </a>
@@ -1008,7 +1043,7 @@
 
 <script>
     // 전역 변수
-    let careersData = [];
+    let userData = null;
 
     // 배경 파티클 생성
     function createParticles() {
@@ -1028,12 +1063,12 @@
         }
     }
 
-    // API에서 커리어 데이터 가져오기
-    async function fetchCareersData() {
+    // API에서 사용자 데이터 가져오기
+    async function fetchUserData() {
         try {
-            const response = await fetch('/careers');
+            const response = await fetch('/user');
             if (!response.ok) {
-                throw new Error('커리어 데이터를 불러올 수 없습니다.');
+                throw new Error('사용자 정보를 불러올 수 없습니다.');
             }
             const data = await response.json();
             return data;
@@ -1043,24 +1078,91 @@
         }
     }
 
-    // 커리어 삭제 함수
-    async function deleteCareer(careerId) {
+    // 사용자 정보 업데이트
+    async function updateUserData(userData) {
         try {
-            const response = await fetch(`/career/${careerId}`, {
-                method: 'DELETE'
+            const response = await fetch('/user', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
             });
 
             if (response.status === 200) {
-                showToast('커리어가 성공적으로 삭제되었습니다!', 'success');
-                // API 재호출로 데이터 업데이트
-                const careers = await fetchCareersData();
-                renderCareers(careers);
+                return true;
             } else {
-                showToast('삭제에 실패했습니다', 'error');
+                throw new Error('정보 수정에 실패했습니다.');
             }
         } catch (error) {
-            console.error('커리어 삭제 오류:', error);
-            showToast('삭제에 실패했습니다', 'error');
+            console.error('사용자 정보 업데이트 오류:', error);
+            throw error;
+        }
+    }
+
+    // 로그아웃 처리
+    async function handleLogout() {
+        if (!confirm('로그아웃 하시겠습니까?')) {
+            return;
+        }
+
+        const logoutButton = document.getElementById('logoutBtn');
+
+        // 버튼 비활성화 및 로딩 상태
+        logoutButton.disabled = true;
+        logoutButton.textContent = '로그아웃 중...';
+
+        try {
+            const response = await fetch('/user/logout', {
+                method: 'GET'
+            });
+
+            if (response.status === 200) {
+                // 성공 시 홈으로 리다이렉트
+                window.location.href = '/';
+            } else {
+                throw new Error('로그아웃에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('로그아웃 오류:', error);
+            showToast('로그아웃에 실패했습니다', 'error');
+        } finally {
+            // 버튼 상태 복원
+            logoutButton.disabled = false;
+            logoutButton.textContent = '로그아웃';
+        }
+    }
+
+    // 계정 삭제 처리
+    async function handleDeleteAccount() {
+        if (!confirm('정말로 계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            return;
+        }
+
+        const deleteButton = document.getElementById('deleteAccountBtn2');
+
+        // 버튼 비활성화 및 로딩 상태
+        deleteButton.disabled = true;
+        deleteButton.textContent = '삭제 중...';
+
+        try {
+            const response = await fetch('/user/delete-account', {
+                method: 'GET'
+            });
+
+            if (response.status === 200) {
+                // 성공 시 홈으로 리다이렉트
+                window.location.href = '/';
+            } else {
+                throw new Error('계정 삭제에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('계정 삭제 오류:', error);
+            showToast('계정 삭제에 실패했습니다', 'error');
+        } finally {
+            // 버튼 상태 복원
+            deleteButton.disabled = false;
+            deleteButton.textContent = '계정삭제';
         }
     }
 
@@ -1082,66 +1184,60 @@
         }, 3000);
     }
 
-    // 커리어 데이터 렌더링
-    function renderCareers(careers) {
-        careersData = careers;
-        const careersStack = document.getElementById('careersStack');
-        const emptyState = document.getElementById('emptyState');
+    // 프로필 데이터 렌더링
+    function renderProfile(user) {
+        userData = user;
 
-        // 기존 내용 초기화
-        careersStack.innerHTML = '';
+        // 헤더의 사용자 이름 업데이트
+        document.getElementById('userName').textContent = user.name;
 
-        if (careers.length === 0) {
-            emptyState.style.display = 'block';
-            return;
-        }
+        // 프로필 카드 정보 업데이트
+        document.getElementById('profileName').textContent = user.name;
+        document.getElementById('profileId').textContent = user.id;
+        document.getElementById('profileAge').textContent = user.age;
+        document.getElementById('profileMajor').textContent = user.major;
 
-        emptyState.style.display = 'none';
+        // 수정 버튼과 계정 관리 버튼들 표시
+        document.getElementById('editProfileBtn').style.display = 'flex';
+        document.getElementById('logoutBtn').style.display = 'inline-block';
+        document.getElementById('deleteAccountBtn2').style.display = 'inline-block';
 
-        // 커리어 아이템들 렌더링 (최신순으로 정렬)
-        careers.forEach((career, index) => {
-            const careerItem = document.createElement('div');
-            careerItem.className = 'career-item';
-            careerItem.style.animationDelay = `${index * 0.1}s`;
-
-            careerItem.innerHTML = `
-                <button class="delete-btn" onclick="deleteCareer(${career.careerId})"></button>
-                <div class="career-header">
-                    <span class="career-type">${career.careerType}</span>
-                </div>
-                <h3 class="career-title">${career.careerTitle}</h3>
-                <p class="career-content">${career.careerContent}</p>
-            `;
-
-            careersStack.appendChild(careerItem);
-        });
+        // 프로필 카드 표시
+        document.getElementById('profileCard').style.display = 'block';
+        document.getElementById('emptyState').style.display = 'none';
     }
 
-    // 커리어 추가 모달 열기
-    function openCareerModal() {
-        const modal = document.getElementById('careerModal');
+    // 프로필 편집 모달 열기
+    function openProfileModal() {
+        if (!userData) return;
+
+        const modal = document.getElementById('profileModal');
+
+        // 폼에 현재 데이터 채우기
+        document.getElementById('editId').value = userData.id;
+        document.getElementById('editName').value = userData.name;
+        document.getElementById('editAge').value = userData.age;
+        document.getElementById('editMajor').value = userData.major;
+
+        // 비밀번호 필드 초기화
+        document.getElementById('editPassword').value = '★★★★★★';
+
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // 폼 초기화
-        document.getElementById('careerForm').reset();
+        // 오류 메시지 숨기기
         document.getElementById('errorMessage').style.display = 'none';
     }
 
     // 모달 닫기
-    function closeCareerModal() {
-        const modal = document.getElementById('careerModal');
+    function closeProfileModal() {
+        const modal = document.getElementById('profileModal');
         modal.classList.remove('active');
         document.body.style.overflow = '';
 
         // 폼 초기화
-        document.getElementById('careerForm').reset();
+        document.getElementById('profileForm').reset();
         document.getElementById('errorMessage').style.display = 'none';
-    }
-
-    // 성공 토스트 표시
-    function showSuccessToast() {
-        showToast('커리어가 성공적으로 등록되었습니다!', 'success');
     }
 
     // 오류 메시지 표시
@@ -1151,46 +1247,43 @@
         errorElement.style.display = 'block';
     }
 
-    // 커리어 등록 처리
-    async function handleCareerSubmit(formData) {
+    // 프로필 업데이트 처리
+    async function handleProfileUpdate(formData) {
         const submitButton = document.getElementById('modalSubmit');
 
         // 버튼 비활성화 및 로딩 상태
         submitButton.disabled = true;
-        submitButton.textContent = '등록 중...';
+        submitButton.textContent = '수정 중...';
 
         try {
-            const response = await fetch('/career/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    careerType: formData.get('careerType'),
-                    careerTitle: formData.get('careerTitle'),
-                    careerContent: formData.get('careerContent')
-                })
-            });
+            // 비밀번호가 별표로 표시된 경우 null로 처리
+            const password = formData.get('password');
+            const updateData = {
+                id: formData.get('id'),
+                password: password === '★★★★★★' ? null : password,
+                name: formData.get('name'),
+                age: formData.get('age'),
+                major: formData.get('major')
+            };
 
-            if (response.status === 200) {
+            const success = await updateUserData(updateData);
+
+            if (success) {
                 // 성공 처리
-                closeCareerModal();
-                showSuccessToast();
+                closeProfileModal();
+                showToast('프로필이 성공적으로 수정되었습니다!', 'success');
 
-                // API 재호출로 데이터 업데이트
-                const careers = await fetchCareersData();
-                renderCareers(careers);
-            } else {
-                // 실패 처리
-                showErrorMessage('등록에 실패했습니다');
+                // 프로필 데이터 다시 불러오기
+                const updatedUser = await fetchUserData();
+                renderProfile(updatedUser);
             }
         } catch (error) {
-            console.error('커리어 등록 오류:', error);
-            showErrorMessage('등록에 실패했습니다');
+            console.error('프로필 업데이트 오류:', error);
+            showErrorMessage('정보 수정에 실패했습니다');
         } finally {
             // 버튼 상태 복원
             submitButton.disabled = false;
-            submitButton.textContent = '등록하기';
+            submitButton.textContent = '수정하기';
         }
     }
 
@@ -1204,25 +1297,45 @@
 
     // 이벤트 리스너 설정
     document.addEventListener('DOMContentLoaded', function() {
-        // 커리어 추가 버튼
-        document.getElementById('addCareerBtn').addEventListener('click', openCareerModal);
+        // 프로필 편집 버튼
+        document.getElementById('editProfileBtn').addEventListener('click', openProfileModal);
+
+        // 로그아웃 버튼
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+        // 계정 삭제 버튼
+        document.getElementById('deleteAccountBtn2').addEventListener('click', handleDeleteAccount);
 
         // 모달 닫기 버튼들
-        document.getElementById('modalClose').addEventListener('click', closeCareerModal);
-        document.getElementById('modalCancel').addEventListener('click', closeCareerModal);
+        document.getElementById('modalClose').addEventListener('click', closeProfileModal);
+        document.getElementById('modalCancel').addEventListener('click', closeProfileModal);
 
         // 모달 외부 클릭시 닫기
-        document.getElementById('careerModal').addEventListener('click', function(e) {
+        document.getElementById('profileModal').addEventListener('click', function(e) {
             if (e.target === this) {
-                closeCareerModal();
+                closeProfileModal();
             }
         });
 
-        // 커리어 폼 제출
-        document.getElementById('careerForm').addEventListener('submit', function(e) {
+        // 프로필 폼 제출
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
-            handleCareerSubmit(formData);
+            handleProfileUpdate(formData);
+        });
+
+        // 비밀번호 필드 포커스시 내용 지우기
+        document.getElementById('editPassword').addEventListener('focus', function() {
+            if (this.value === '★★★★★★') {
+                this.value = '';
+            }
+        });
+
+        // 비밀번호 필드 블러시 빈 값이면 별표로 되돌리기
+        document.getElementById('editPassword').addEventListener('blur', function() {
+            if (this.value === '') {
+                this.value = '★★★★★★';
+            }
         });
 
         // 네비게이션 아이템 클릭 이벤트
@@ -1244,12 +1357,13 @@
         createParticles();
 
         try {
-            // API에서 커리어 데이터 가져와서 렌더링
-            const careers = await fetchCareersData();
-            renderCareers(careers);
+            // API에서 사용자 데이터 가져와서 렌더링
+            const user = await fetchUserData();
+            renderProfile(user);
         } catch (error) {
-            console.error('커리어 데이터 로드 실패:', error);
+            console.error('사용자 데이터 로드 실패:', error);
             // 오류 발생 시 빈 상태 표시
+            document.getElementById('profileCard').style.display = 'none';
             document.getElementById('emptyState').style.display = 'block';
         }
     });

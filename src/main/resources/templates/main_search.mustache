@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>JGenie - 커리어</title>
+    <title>JGenie - 검색</title>
     <style>
         * {
             margin: 0;
@@ -57,13 +57,6 @@
             margin-bottom: clamp(20px, 5vw, 30px);
             padding-top: 8px;
             padding-top: max(8px, env(safe-area-inset-top));
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .header-content {
-            flex: 1;
         }
 
         .logo {
@@ -83,43 +76,75 @@
             letter-spacing: -0.01em;
         }
 
-        /* 추가 버튼 */
-        .add-career-btn {
-            width: clamp(36px, 9vw, 40px);
-            height: clamp(36px, 9vw, 40px);
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
+        /* 검색 섹션 */
+        .search-section {
+            margin-bottom: clamp(24px, 6vw, 32px);
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: clamp(12px, 3vw, 16px) clamp(40px, 10vw, 48px) clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
+            font-family: inherit;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            letter-spacing: -0.01em;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: clamp(12px, 3vw, 16px);
+            top: 50%;
+            transform: translateY(-50%);
+            width: clamp(20px, 5vw, 24px);
+            height: clamp(20px, 5vw, 24px);
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            touch-action: manipulation;
-            margin-top: 8px;
+            pointer-events: none;
         }
 
-        .add-career-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
+        .search-icon::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
         }
 
-        .add-career-btn:active {
-            transform: scale(0.95);
+        .search-icon::after {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            width: 6px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.6);
+            transform: rotate(45deg);
         }
 
-        .add-career-btn::before {
-            content: '+';
-            color: rgba(255, 255, 255, 0.9);
-            font-size: clamp(1.2rem, 4vw, 1.4rem);
-            font-weight: 600;
-            line-height: 1;
-        }
-
-        /* 커리어 섹션 */
-        .careers-section {
+        /* 검색 결과 섹션 */
+        .results-section {
             margin-bottom: clamp(24px, 6vw, 48px);
         }
 
@@ -131,13 +156,13 @@
             letter-spacing: -0.01em;
         }
 
-        .careers-stack {
+        .results-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .career-item {
+        .result-item {
             background: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
@@ -145,77 +170,37 @@
             backdrop-filter: blur(15px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            animation: slideInUp 0.5s ease-out;
-            position: relative;
+            cursor: pointer;
+            touch-action: manipulation;
         }
 
-        .career-item:hover {
+        .result-item:hover {
             background: rgba(255, 255, 255, 0.18);
             border-color: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
-        /* 삭제 버튼 스타일 */
-        .delete-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 24px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(10px);
-            touch-action: manipulation;
+        .result-item:active {
+            transform: scale(0.98);
         }
 
-        .delete-btn:hover {
-            background: rgba(239, 68, 68, 0.8);
-            border-color: rgba(239, 68, 68, 1);
-            transform: scale(1.1);
-        }
-
-        .delete-btn:active {
-            transform: scale(0.9);
-        }
-
-        .delete-btn::before {
-            content: '×';
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1;
-        }
-
-        .delete-btn:hover::before {
-            color: white;
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .career-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .company-name {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
+            font-weight: 600;
             margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            line-height: 1.3;
         }
 
-        .career-type {
+        .company-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .company-type {
             background: rgba(255, 255, 255, 0.2);
             color: rgba(255, 255, 255, 0.9);
             padding: 4px 8px;
@@ -223,23 +208,16 @@
             font-size: clamp(0.65rem, 2.5vw, 0.7rem);
             font-weight: 600;
             letter-spacing: -0.01em;
+            display: inline-block;
+            width: fit-content;
         }
 
-        .career-title {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: clamp(0.9rem, 3.5vw, 1rem);
-            font-weight: 600;
-            margin-bottom: 8px;
-            letter-spacing: -0.01em;
-            line-height: 1.3;
-            padding-right: 36px;
-        }
-
-        .career-content {
+        .industry-type {
             color: rgba(255, 255, 255, 0.8);
             font-size: clamp(0.75rem, 3vw, 0.8rem);
-            line-height: 1.5;
+            line-height: 1.4;
             letter-spacing: -0.01em;
+            margin-top: 4px;
         }
 
         /* 빈 상태 */
@@ -264,6 +242,79 @@
         .empty-subtext {
             font-size: clamp(0.7rem, 2.5vw, 0.75rem);
             opacity: 0.8;
+        }
+
+        /* 로딩 오버레이 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-logo {
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .loading-spinner {
+            width: clamp(40px, 10vw, 60px);
+            height: clamp(40px, 10vw, 60px);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+
+        .loading-message.fade-out {
+            opacity: 0;
+        }
+
+        .loading-submessage {
+            font-size: clamp(0.75rem, 3vw, 0.85rem);
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
         }
 
         /* 모달 스타일 */
@@ -353,6 +404,7 @@
             color: rgba(0, 0, 0, 0.9);
             margin-bottom: 8px;
             letter-spacing: -0.02em;
+            word-break: keep-all;
         }
 
         .modal-subtitle {
@@ -361,12 +413,65 @@
             font-weight: 500;
         }
 
-        /* 폼 스타일 */
-        .form-group {
-            margin-bottom: 20px;
+        .company-info {
+            margin-bottom: 24px;
         }
 
-        .form-label {
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 10px;
+            border-left: 3px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: clamp(0.7rem, 2.5vw, 0.75rem);
+            font-weight: 600;
+            color: rgba(102, 126, 234, 0.8);
+            min-width: clamp(50px, 15vw, 60px);
+            margin-right: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            font-size: clamp(0.8rem, 3vw, 0.85rem);
+            color: rgba(0, 0, 0, 0.8);
+            line-height: 1.4;
+            font-weight: 500;
+            word-break: keep-all;
+        }
+
+        /* 자소서 지문 섹션 */
+        .essay-section {
+            margin-bottom: 24px;
+        }
+
+        .essay-section-title {
+            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.9);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+
+        .essay-question {
+            margin-bottom: 16px;
+        }
+
+        .essay-question:last-child {
+            margin-bottom: 0;
+        }
+
+        .question-label {
             display: block;
             font-size: clamp(0.75rem, 3vw, 0.8rem);
             font-weight: 600;
@@ -375,33 +480,9 @@
             letter-spacing: -0.01em;
         }
 
-        .form-select {
+        .question-textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 8px;
-            font-size: clamp(0.75rem, 3vw, 0.8rem);
-            font-family: inherit;
-            color: rgba(0, 0, 0, 0.8);
-            background: rgba(102, 126, 234, 0.03);
-            transition: all 0.2s ease;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 8px;
-            font-size: clamp(0.75rem, 3vw, 0.8rem);
-            font-family: inherit;
-            color: rgba(0, 0, 0, 0.8);
-            background: rgba(102, 126, 234, 0.03);
-            transition: all 0.2s ease;
-        }
-
-        .form-textarea {
-            width: 100%;
-            min-height: clamp(80px, 20vw, 100px);
+            min-height: clamp(60px, 15vw, 80px);
             padding: 12px;
             border: 1px solid rgba(102, 126, 234, 0.2);
             border-radius: 8px;
@@ -413,18 +494,14 @@
             transition: all 0.2s ease;
         }
 
-        .form-select:focus,
-        .form-input:focus,
-        .form-textarea:focus {
+        .question-textarea:focus {
             outline: none;
             border-color: rgba(102, 126, 234, 0.5);
             background: rgba(102, 126, 234, 0.08);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .form-select::placeholder,
-        .form-input::placeholder,
-        .form-textarea::placeholder {
+        .question-textarea::placeholder {
             color: rgba(0, 0, 0, 0.4);
             font-size: clamp(0.7rem, 2.5vw, 0.75rem);
         }
@@ -460,12 +537,6 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
         .btn-secondary {
             background: rgba(0, 0, 0, 0.05);
             color: rgba(0, 0, 0, 0.7);
@@ -475,86 +546,6 @@
         .btn-secondary:hover {
             background: rgba(0, 0, 0, 0.08);
             transform: translateY(-1px);
-        }
-
-        /* 오류 메시지 */
-        .error-message {
-            color: #e53e3e;
-            font-size: clamp(0.7rem, 2.5vw, 0.75rem);
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        /* 말풍선 알림 */
-        .bubble-notification {
-            position: absolute;
-            top: -45px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            color: rgba(102, 126, 234, 0.9);
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: clamp(0.65rem, 2.5vw, 0.7rem);
-            font-weight: 600;
-            white-space: nowrap;
-            animation: bubbleBounce 2s ease-in-out infinite;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            backdrop-filter: blur(10px);
-            pointer-events: none;
-        }
-
-        .bubble-notification::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-top: 6px solid rgba(255, 255, 255, 0.95);
-        }
-
-        @keyframes bubbleBounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            40% {
-                transform: translateX(-50%) translateY(-3px);
-            }
-            60% {
-                transform: translateX(-50%) translateY(-1px);
-            }
-        }
-
-        /* 알림 토스트 */
-        .toast {
-            position: fixed;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: rgba(34, 197, 94, 0.95);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: clamp(0.8rem, 3vw, 0.85rem);
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            z-index: 50;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .toast.error {
-            background: rgba(239, 68, 68, 0.95);
         }
 
         /* 하단 네비게이션 */
@@ -657,6 +648,49 @@
             color: white;
             font-weight: 600;
             letter-spacing: -0.01em;
+        }
+
+        /* 말풍선 알림 */
+        .bubble-notification {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: rgba(102, 126, 234, 0.9);
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: clamp(0.65rem, 2.5vw, 0.7rem);
+            font-weight: 600;
+            white-space: nowrap;
+            animation: bubbleBounce 2s ease-in-out infinite;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .bubble-notification::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(255, 255, 255, 0.95);
+        }
+
+        @keyframes bubbleBounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-3px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-1px);
+            }
         }
 
         /* 홈 아이콘 */
@@ -890,92 +924,125 @@
 <!-- 배경 파티클 -->
 <div class="particles" id="particles"></div>
 
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="loading-logo">JGenie</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-message" id="loadingMessage">JGenie가 자기소개서를 작성중이에요!</div>
+        <div class="loading-submessage">조금만 기다려주세요</div>
+    </div>
+</div>
+
 <!-- 메인 컨테이너 -->
 <div class="main-container">
     <!-- 헤더 -->
     <header class="header">
-        <div class="header-content">
-            <h1 class="logo">JGenie</h1>
-            <p class="welcome-text">나의 커리어를 체계적으로 관리하고<br>성장 과정을 기록해보세요</p>
-        </div>
-        <button class="add-career-btn" id="addCareerBtn"></button>
+        <h1 class="logo">JGenie</h1>
+        <p class="welcome-text">원하는 기업을 검색하고<br>맞춤형 자기소개서를 작성해보세요</p>
     </header>
 
-    <!-- 커리어 섹션 -->
-    <section class="careers-section">
-        <h2 class="section-title">나의 커리어</h2>
-        <div class="careers-stack" id="careersStack">
-            <!-- 커리어 아이템들이 여기에 렌더링됩니다 -->
-        </div>
-
-        <!-- 빈 상태 -->
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <div class="empty-icon">📋</div>
-            <div class="empty-text">아직 등록된 커리어가 없어요</div>
-            <div class="empty-subtext">우측 상단의 + 버튼을 눌러 첫 커리어를 추가해보세요</div>
+    <!-- 검색 섹션 -->
+    <section class="search-section">
+        <div class="search-container">
+            <input
+                    type="text"
+                    class="search-input"
+                    id="searchInput"
+                    placeholder="기업명을 입력해주세요..."
+                    autocomplete="off"
+            />
+            <div class="search-icon"></div>
         </div>
     </section>
+
+    <!-- 검색 결과 섹션 -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+        <h2 class="section-title">검색 결과</h2>
+        <div class="results-container" id="resultsContainer">
+            <!-- 검색 결과가 여기에 렌더링됩니다 -->
+        </div>
+    </section>
+
+    <!-- 빈 상태 -->
+    <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">기업명을 검색해보세요</div>
+        <div class="empty-subtext">원하는 기업을 찾아 맞춤형 자기소개서를 작성할 수 있어요</div>
+    </div>
 </div>
 
-<!-- 커리어 추가 모달 -->
-<div class="modal-overlay" id="careerModal">
+<!-- 기업 정보 모달 -->
+<div class="modal-overlay" id="companyModal">
     <div class="modal-content">
         <button class="modal-close" id="modalClose"></button>
         <div class="modal-header">
-            <h2 class="modal-title">새 커리어 추가</h2>
-            <p class="modal-subtitle">나의 성취와 경험을 기록해보세요</p>
+            <h2 class="modal-title" id="modalCompanyName">기업명</h2>
+            <p class="modal-subtitle">AI 자기소개서 작성</p>
+        </div>
+        <div class="company-info">
+            <div class="info-item">
+                <span class="info-label">기업유형</span>
+                <span class="info-value" id="modalCompanyType">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">산업분야</span>
+                <span class="info-value" id="modalIndustryType">-</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">인재상</span>
+                <span class="info-value" id="modalTalentProfile">-</span>
+            </div>
         </div>
 
-        <form id="careerForm">
-            <div class="form-group">
-                <label class="form-label" for="careerType">커리어 타입</label>
-                <select class="form-select" id="careerType" name="careerType" required>
-                    <option value="">타입을 선택해주세요</option>
-                    <option value="학력">학력</option>
-                    <option value="경력">경력</option>
-                    <option value="경험/활동">경험/활동</option>
-                    <option value="교육/훈련">교육/훈련</option>
-                    <option value="자격/어학">자격/어학</option>
-                    <option value="수상">수상</option>
-                    <option value="스킬/역량">스킬/역량</option>
-                    <option value="프로젝트/성과">프로젝트/성과</option>
-                    <option value="기타">기타</option>
-                </select>
-            </div>
+        <!-- 자소서 지문 섹션 -->
+        <form id="coverletterForm" action="/coverletter" method="POST">
+            <input type="hidden" name="companyName" id="formCompanyName">
+            <input type="hidden" name="companyType" id="formCompanyType">
+            <input type="hidden" name="industryType" id="formIndustryType">
+            <input type="hidden" name="talentProfile" id="formTalentProfile">
 
-            <div class="form-group">
-                <label class="form-label" for="careerTitle">커리어 제목</label>
-                <input
-                        type="text"
-                        class="form-input"
-                        id="careerTitle"
-                        name="careerTitle"
-                        placeholder="예: ~~해커톤 참여, 토익 900점 취득 등"
-                        required>
-            </div>
+            <div class="essay-section">
+                <h3 class="essay-section-title">자기소개서 질문</h3>
 
-            <div class="form-group">
-                <label class="form-label" for="careerContent">상세 내용</label>
-                <textarea
-                        class="form-textarea"
-                        id="careerContent"
-                        name="careerContent"
-                        placeholder="커리어에 대한 자세한 내용을 작성해주세요. 성과, 배운점, 역할 등을 구체적으로 기록하면 좋습니다."
-                        required></textarea>
-            </div>
+                <div class="essay-question">
+                    <label class="question-label" for="question1">질문 1</label>
+                    <textarea
+                            class="question-textarea"
+                            id="question1"
+                            name="question1"
+                            placeholder="첫 번째 자기소개서 질문을 작성해주세요. (예: 본인의 성장과정과 가치관을 중심으로 자기소개를 해주세요.)"
+                            required></textarea>
+                </div>
 
-            <div class="error-message" id="errorMessage" style="display: none;"></div>
+                <div class="essay-question">
+                    <label class="question-label" for="question2">질문 2</label>
+                    <textarea
+                            class="question-textarea"
+                            id="question2"
+                            name="question2"
+                            placeholder="두 번째 자기소개서 질문을 작성해주세요. (예: 지원하게 된 동기와 입사 후 포부에 대해 작성해주세요.)"
+                            required></textarea>
+                </div>
+
+                <div class="essay-question">
+                    <label class="question-label" for="question3">질문 3</label>
+                    <textarea
+                            class="question-textarea"
+                            id="question3"
+                            name="question3"
+                            placeholder="세 번째 자기소개서 질문을 작성해주세요. (예: 본인의 역량과 관련 경험에 대해 구체적으로 작성해주세요.)"
+                            required></textarea>
+                </div>
+            </div>
 
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" id="modalCancel">취소</button>
-                <button type="submit" class="btn btn-primary" id="modalSubmit">등록하기</button>
+                <button type="submit" class="btn btn-primary" id="modalWrite">자기소개서 작성</button>
             </div>
         </form>
     </div>
 </div>
-
-<!-- 토스트 추가 (하단 네비게이션 바로 위) -->
-<div id="successToast" class="toast"></div>
 
 <!-- 하단 네비게이션 -->
 <nav class="bottom-nav">
@@ -984,7 +1051,7 @@
             <div class="nav-icon home"></div>
             <span class="nav-label">홈</span>
         </a>
-        <a href="/main/search" class="nav-item">
+        <a href="/main/search" class="nav-item active">
             <div class="nav-icon search"></div>
             <span class="nav-label">검색</span>
         </a>
@@ -995,7 +1062,7 @@
             <span class="main-button-text">자소서</span>
         </button>
 
-        <a href="/main/career" class="nav-item active">
+        <a href="/main/career" class="nav-item">
             <div class="nav-icon career"></div>
             <span class="nav-label">커리어</span>
         </a>
@@ -1008,7 +1075,54 @@
 
 <script>
     // 전역 변수
-    let careersData = [];
+    let searchTimeout;
+    let selectedCompany = null;
+
+    // 로딩 메시지 배열
+    const loadingMessages = [
+        'JGenie가 자기소개서를 작성중이에요!',
+        '사용자님의 커리어를 검토중이에요!',
+        '조금만 기다려주세요!',
+        '맞춤형 자기소개서를 준비하고 있어요!'
+    ];
+
+    let loadingMessageIndex = 0;
+    let loadingMessageInterval;
+
+    // 로딩 화면 표시
+    function showLoading() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        loadingOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // 부드러운 메시지 순환 표시
+        loadingMessageInterval = setInterval(() => {
+            // 페이드 아웃
+            loadingMessage.classList.add('fade-out');
+
+            setTimeout(() => {
+                // 메시지 변경
+                loadingMessageIndex = (loadingMessageIndex + 1) % loadingMessages.length;
+                loadingMessage.textContent = loadingMessages[loadingMessageIndex];
+
+                // 페이드 인
+                loadingMessage.classList.remove('fade-out');
+            }, 500);
+        }, 3500);
+    }
+
+    // 로딩 화면 숨기기
+    function hideLoading() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        if (loadingMessageInterval) {
+            clearInterval(loadingMessageInterval);
+        }
+    }
 
     // 배경 파티클 생성
     function createParticles() {
@@ -1028,170 +1142,119 @@
         }
     }
 
-    // API에서 커리어 데이터 가져오기
-    async function fetchCareersData() {
+    // API에서 기업 검색
+    async function searchCompanies(companyName) {
         try {
-            const response = await fetch('/careers');
+            const response = await fetch(`/companies/${encodeURIComponent(companyName)}`);
             if (!response.ok) {
-                throw new Error('커리어 데이터를 불러올 수 없습니다.');
+                throw new Error('검색 결과를 불러올 수 없습니다.');
             }
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('API 호출 오류:', error);
-            throw error;
+            console.error('검색 API 호출 오류:', error);
+            return [];
         }
     }
 
-    // 커리어 삭제 함수
-    async function deleteCareer(careerId) {
-        try {
-            const response = await fetch(`/career/${careerId}`, {
-                method: 'DELETE'
-            });
-
-            if (response.status === 200) {
-                showToast('커리어가 성공적으로 삭제되었습니다!', 'success');
-                // API 재호출로 데이터 업데이트
-                const careers = await fetchCareersData();
-                renderCareers(careers);
-            } else {
-                showToast('삭제에 실패했습니다', 'error');
-            }
-        } catch (error) {
-            console.error('커리어 삭제 오류:', error);
-            showToast('삭제에 실패했습니다', 'error');
-        }
-    }
-
-    // 토스트 메시지 표시 함수
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('successToast');
-        toast.textContent = message;
-
-        // 타입에 따라 클래스 설정
-        toast.className = 'toast';
-        if (type === 'error') {
-            toast.classList.add('error');
-        }
-
-        toast.classList.add('show');
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // 커리어 데이터 렌더링
-    function renderCareers(careers) {
-        careersData = careers;
-        const careersStack = document.getElementById('careersStack');
+    // 검색 결과 렌더링
+    function renderSearchResults(companies) {
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContainer = document.getElementById('resultsContainer');
         const emptyState = document.getElementById('emptyState');
 
-        // 기존 내용 초기화
-        careersStack.innerHTML = '';
+        // 기존 결과 초기화
+        resultsContainer.innerHTML = '';
 
-        if (careers.length === 0) {
+        if (companies.length === 0) {
+            resultsSection.style.display = 'none';
             emptyState.style.display = 'block';
             return;
         }
 
         emptyState.style.display = 'none';
+        resultsSection.style.display = 'block';
 
-        // 커리어 아이템들 렌더링 (최신순으로 정렬)
-        careers.forEach((career, index) => {
-            const careerItem = document.createElement('div');
-            careerItem.className = 'career-item';
-            careerItem.style.animationDelay = `${index * 0.1}s`;
+        // 검색 결과 렌더링
+        companies.forEach(company => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.addEventListener('click', () => {
+                openCompanyModal(company);
+            });
 
-            careerItem.innerHTML = `
-                <button class="delete-btn" onclick="deleteCareer(${career.careerId})"></button>
-                <div class="career-header">
-                    <span class="career-type">${career.careerType}</span>
+            resultItem.innerHTML = `
+                <div class="company-name">${company.companyName}</div>
+                <div class="company-info">
+                    <span class="company-type">${company.companyType}</span>
+                    <div class="industry-type">${company.industryType}</div>
                 </div>
-                <h3 class="career-title">${career.careerTitle}</h3>
-                <p class="career-content">${career.careerContent}</p>
             `;
 
-            careersStack.appendChild(careerItem);
+            resultsContainer.appendChild(resultItem);
         });
     }
 
-    // 커리어 추가 모달 열기
-    function openCareerModal() {
-        const modal = document.getElementById('careerModal');
+    // 검색 입력 이벤트 처리
+    function handleSearchInput() {
+        const searchInput = document.getElementById('searchInput');
+        const query = searchInput.value.trim();
+
+        // 검색 타이머 클리어
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        if (query === '') {
+            // 검색어가 없으면 결과 숨기기
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+            return;
+        }
+
+        // 300ms 지연 후 검색 실행
+        searchTimeout = setTimeout(async () => {
+            try {
+                const companies = await searchCompanies(query);
+                renderSearchResults(companies);
+            } catch (error) {
+                console.error('검색 오류:', error);
+                renderSearchResults([]);
+            }
+        }, 300);
+    }
+
+    // 기업 모달 열기
+    function openCompanyModal(company) {
+        selectedCompany = company;
+
+        // 모달 데이터 설정
+        document.getElementById('modalCompanyName').textContent = company.companyName;
+        document.getElementById('modalCompanyType').textContent = company.companyType;
+        document.getElementById('modalIndustryType').textContent = company.industryType;
+        document.getElementById('modalTalentProfile').textContent = company.talentProfile;
+
+        // 폼 숨겨진 필드 설정
+        document.getElementById('formCompanyName').value = company.companyName;
+        document.getElementById('formCompanyType').value = company.companyType;
+        document.getElementById('formIndustryType').value = company.industryType;
+        document.getElementById('formTalentProfile').value = company.talentProfile;
+
+        // 모달 표시
+        const modal = document.getElementById('companyModal');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-
-        // 폼 초기화
-        document.getElementById('careerForm').reset();
-        document.getElementById('errorMessage').style.display = 'none';
     }
 
     // 모달 닫기
-    function closeCareerModal() {
-        const modal = document.getElementById('careerModal');
+    function closeCompanyModal() {
+        const modal = document.getElementById('companyModal');
         modal.classList.remove('active');
         document.body.style.overflow = '';
+        selectedCompany = null;
 
         // 폼 초기화
-        document.getElementById('careerForm').reset();
-        document.getElementById('errorMessage').style.display = 'none';
-    }
-
-    // 성공 토스트 표시
-    function showSuccessToast() {
-        showToast('커리어가 성공적으로 등록되었습니다!', 'success');
-    }
-
-    // 오류 메시지 표시
-    function showErrorMessage(message) {
-        const errorElement = document.getElementById('errorMessage');
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
-    }
-
-    // 커리어 등록 처리
-    async function handleCareerSubmit(formData) {
-        const submitButton = document.getElementById('modalSubmit');
-
-        // 버튼 비활성화 및 로딩 상태
-        submitButton.disabled = true;
-        submitButton.textContent = '등록 중...';
-
-        try {
-            const response = await fetch('/career/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    careerType: formData.get('careerType'),
-                    careerTitle: formData.get('careerTitle'),
-                    careerContent: formData.get('careerContent')
-                })
-            });
-
-            if (response.status === 200) {
-                // 성공 처리
-                closeCareerModal();
-                showSuccessToast();
-
-                // API 재호출로 데이터 업데이트
-                const careers = await fetchCareersData();
-                renderCareers(careers);
-            } else {
-                // 실패 처리
-                showErrorMessage('등록에 실패했습니다');
-            }
-        } catch (error) {
-            console.error('커리어 등록 오류:', error);
-            showErrorMessage('등록에 실패했습니다');
-        } finally {
-            // 버튼 상태 복원
-            submitButton.disabled = false;
-            submitButton.textContent = '등록하기';
-        }
+        document.getElementById('coverletterForm').reset();
     }
 
     // 메인 자소서 버튼 클릭 이벤트
@@ -1202,56 +1265,80 @@
         });
     }
 
-    // 이벤트 리스너 설정
-    document.addEventListener('DOMContentLoaded', function() {
-        // 커리어 추가 버튼
-        document.getElementById('addCareerBtn').addEventListener('click', openCareerModal);
+    // 검색 입력 이벤트 리스너
+    document.getElementById('searchInput').addEventListener('input', handleSearchInput);
 
-        // 모달 닫기 버튼들
-        document.getElementById('modalClose').addEventListener('click', closeCareerModal);
-        document.getElementById('modalCancel').addEventListener('click', closeCareerModal);
+    // 모달 이벤트 리스너
+    document.getElementById('modalClose').addEventListener('click', closeCompanyModal);
+    document.getElementById('modalCancel').addEventListener('click', closeCompanyModal);
 
-        // 모달 외부 클릭시 닫기
-        document.getElementById('careerModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeCareerModal();
-            }
-        });
+    // 모달 외부 클릭시 닫기
+    document.getElementById('companyModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCompanyModal();
+        }
+    });
 
-        // 커리어 폼 제출
-        document.getElementById('careerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            handleCareerSubmit(formData);
-        });
+    // 자기소개서 폼 제출 이벤트
+    document.getElementById('coverletterForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-        // 네비게이션 아이템 클릭 이벤트
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                if (this.classList.contains('active')) {
-                    e.preventDefault();
-                    return;
-                }
+        const formData = new FormData(this);
 
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
+        // 모달 닫기
+        closeCompanyModal();
+
+        // 로딩 화면 표시
+        showLoading();
+
+        try {
+            // /coverletter/ai로 POST 요청
+            const response = await fetch('/coverletter/ai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    companyName: formData.get('companyName'),
+                    companyType: formData.get('companyType'),
+                    industryType: formData.get('industryType'),
+                    talentProfile: formData.get('talentProfile'),
+                    question1: formData.get('question1'),
+                    question2: formData.get('question2'),
+                    question3: formData.get('question3')
+                })
             });
+
+            if (!response.ok) {
+                throw new Error('AI 분석 요청 실패');
+            }
+
+            // AI 응답을 받은 후 /coverletter로 이동
+            window.location.href = '/coverletter';
+
+        } catch (error) {
+            console.error('AI 분석 오류:', error);
+            hideLoading();
+            alert('AI 분석 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    });
+
+    // 네비게이션 아이템 클릭 이벤트
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (this.classList.contains('active')) {
+                e.preventDefault();
+                return;
+            }
+
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
         });
     });
 
     // 페이지 로드 시 초기화
-    window.addEventListener('load', async () => {
+    window.addEventListener('load', () => {
         createParticles();
-
-        try {
-            // API에서 커리어 데이터 가져와서 렌더링
-            const careers = await fetchCareersData();
-            renderCareers(careers);
-        } catch (error) {
-            console.error('커리어 데이터 로드 실패:', error);
-            // 오류 발생 시 빈 상태 표시
-            document.getElementById('emptyState').style.display = 'block';
-        }
     });
 </script>
 </body>

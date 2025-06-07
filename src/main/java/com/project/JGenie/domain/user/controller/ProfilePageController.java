@@ -1,4 +1,4 @@
-package com.project.JGenie.domain.career.controller;
+package com.project.JGenie.domain.user.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -7,20 +7,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 @Slf4j
-public class CareerPageController {
-
+public class ProfilePageController {
     private final HttpSession session;
 
-    public CareerPageController(HttpSession session) {
+    public ProfilePageController(HttpSession session) {
         this.session = session;
     }
 
-    @GetMapping("/main/career")
-    public String careerPage() {
+    @GetMapping("/main/profile")
+    public String profilePage() {
         if (session.getAttribute("id") == null) {
+            log.error("로그인 정보가 없습니다.");
             return "err";
         }
-        return "main_career";
+        return "main_profile";
     }
-
 }

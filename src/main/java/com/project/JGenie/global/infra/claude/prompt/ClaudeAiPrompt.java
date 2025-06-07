@@ -64,7 +64,7 @@ public class ClaudeAiPrompt {
                                 .collect(Collectors.joining("\n\n")),
 
                         claudeAiRequest.getUserCareer().stream()
-                                .map(career -> "--- 경력 정보 ---\n" + career.getCareerContent())
+                                .map(career -> "--- 경력 정보 ---\n" + career.getCareerContent() + "\n" + career.getCareerTitle())
                                 .collect(Collectors.joining("\n\n")),
 
                         claudeAiRequest.getQuestion1(),

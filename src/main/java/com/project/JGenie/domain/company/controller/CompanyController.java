@@ -5,6 +5,7 @@ import com.project.JGenie.domain.company.entity.CompanyEntity;
 import com.project.JGenie.domain.company.service.CompanyService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,17 @@ public class CompanyController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.status(500).body("error");
+        }
+    }
+
+    @GetMapping("/{companyName}")
+    public ResponseEntity<List<CompanyEntity>> findByCompanyName(@PathVariable String companyName) {
+        try {
+            companyService.findByCompanyNameContaining(companyName);
+            return ResponseEntity.ok(companyService.findByCompanyNameContaining(companyName));
+        } catch (Exception e) {
+            log.error("error : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

@@ -34,7 +34,7 @@ public class UserCareerService {
     }
 
     public List<UserCareerEntity> getUserCareers() {
-        return userCareerRepository.findAll();
+        return userCareerRepository.findByUserId(session.getAttribute("id").toString());
     }
 
     @Transactional
