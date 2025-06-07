@@ -740,9 +740,7 @@
             if (response.status === 200) {
                 showToast('자기소개서가 성공적으로 삭제되었습니다');
                 // API 재호출로 데이터 업데이트
-                const coverletters = await fetchCoverletters();
-                coverlettersData = coverletters;
-                renderCoverletters(coverletters);
+                fetchAndRenderCoverletters();
             } else {
                 showToast('삭제에 실패했습니다');
             }
@@ -751,6 +749,8 @@
             showToast('삭제에 실패했습니다');
         }
     }
+
+    // 마크다운을 HTML로 변환
     function parseMarkdown(markdown) {
         let html = markdown;
 
@@ -1033,6 +1033,23 @@
         }
     }
 
+    // 데이터 가져오기 및 렌더링 함수
+    async function fetchAndRenderCoverletters() {
+        try {
+            const coverletters = await fetchCoverletters();
+            coverlettersData = coverletters;
+            renderCoverletters(coverletters);
+        } catch (error) {
+            console.error('자기소개서 로드 실패:', error);
+            document.getElementById('loadingContainer').innerHTML = `
+                <div class="loading-text" style="color: #ff6b6b;">
+                    자기소개서를 불러오는데 실패했습니다<br>
+                    <small style="font-size: 0.8em; margin-top: 8px; display: block;">잠시 후 다시 시도해주세요</small>
+                </div>
+            `;
+        }
+    }
+
     // 이벤트 리스너
     document.getElementById('backButton').addEventListener('click', () => {
         window.location.href = '/main/home';
@@ -1057,22 +1074,16 @@
     });
 
     // 페이지 로드 시 초기화
-    window.addEventListener('load', async () => {
+    window.addEventListener('load', () => {
         createParticles();
 
-        try {
-            const coverletters = await fetchCoverletters();
-            coverlettersData = coverletters;
-            renderCoverletters(coverletters);
-        } catch (error) {
-            console.error('자기소개서 로드 실패:', error);
-            document.getElementById('loadingContainer').innerHTML = `
-                <div class="loading-text" style="color: #ff6b6b;">
-                    자기소개서를 불러오는데 실패했습니다<br>
-                    <small style="font-size: 0.8em; margin-top: 8px; display: block;">잠시 후 다시 시도해주세요</small>
-                </div>
-            `;
-        }
+        // 즉시 로딩 상태 표시
+        document.getElementById('loadingContainer').style.display = 'flex';
+        document.getElementById('coverlettersGrid').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+
+        // 비동기로 데이터 로드
+        fetchAndRenderCoverletters();
     });
 </script>
 </body>
