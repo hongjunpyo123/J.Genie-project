@@ -57,6 +57,12 @@ public class CoverLetterAiService {
     }
 
     public void coverLetterAi(CoverLetterAiRequest coverLetterAiRequest) throws RuntimeException{
+
+        if(session.getAttribute("id") == null) {
+            log.error("잘못된 요청입니다");
+            throw new RuntimeException("잘못된 요청입니다.");
+        }
+
         String userId = session.getAttribute("id").toString();
 
         UserEntity baseUser = userRepository.findById(userId).orElse(null);
