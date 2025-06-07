@@ -189,6 +189,27 @@
 
         .card-header {
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-number {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .new-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
         }
 
         .card-date {
@@ -729,19 +750,26 @@
             return;
         }
 
+        // 역순으로 정렬
+        const sortedCoverletters = [...coverletters].reverse();
+
         grid.innerHTML = '';
-        coverletters.forEach((coverletter, index) => {
+        sortedCoverletters.forEach((coverletter, index) => {
             const card = document.createElement('div');
             card.className = 'coverletter-card';
             card.style.animationDelay = `${index * 0.1}s`;
 
             const preview = getPreviewText(coverletter.userCoverLetterContent);
             const date = formatDate(coverletter.id);
+            const cardNumber = index + 1;
+            const isFirst = index === 0;
 
             card.innerHTML = `
                 <div class="card-header">
                     <div class="card-date">${date}</div>
                     <div class="card-title">자기소개서 #${coverletter.id}</div>
+                    <div class="card-number">${cardNumber}</div>
+                    ${isFirst ? '<div class="new-badge">NEW!</div>' : ''}
                 </div>
                 <div class="card-preview">${preview}</div>
                 <div class="card-footer">
