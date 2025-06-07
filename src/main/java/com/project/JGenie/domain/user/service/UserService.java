@@ -102,13 +102,36 @@ public class UserService {
         if(session.getAttribute("id") == null || !session.getAttribute("id").equals(userDto.getId()) || !userRepository.existsById(userDto.getId())) {
             throw new RuntimeException("비정상적인 요청");
         }
+
+        if(!isDigitsOnly(userDto.getAge())) {
+            throw new RuntimeException("비정상적인 요청");
+        }
+
         UserEntity userEntity = userRepository.findById(userDto.getId()).orElse(null);
-        userEntity.setPassword(BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt()));
+
+        if(userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            userDto.setPassword(userEntity.getPassword()); // 비밀번호가 입력되지 않은 경우 기존 비밀번호 유지
+        } else {
+            if(userDto.getPassword().length() < 8) {
+                throw new RuntimeException("비밀번호는 8자 이상이어야 합니다.");
+            }
+            userEntity.setPassword(BCrypt.hashpw(userDto.getPassword(), BCrypt.gensalt()));
+        }
+
         userEntity.setName(securityUtil.encrypt(userDto.getName()));
         userEntity.setAge(securityUtil.encrypt(userDto.getAge()));
         userEntity.setMajor(securityUtil.encrypt(userDto.getMajor()));
 
         userRepository.save(userEntity);
+    }
+
+    public boolean isDigitsOnly(String str) {
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
