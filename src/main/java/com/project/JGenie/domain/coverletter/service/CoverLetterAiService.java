@@ -2,6 +2,7 @@ package com.project.JGenie.domain.coverletter.service;
 
 import com.project.JGenie.domain.career.entity.UserCareerEntity;
 import com.project.JGenie.domain.career.repository.UserCareerRepository;
+import com.project.JGenie.domain.career.service.UserCareerService;
 import com.project.JGenie.domain.company.entity.CompanyEntity;
 import com.project.JGenie.domain.company.repository.CompanyRepository;
 import com.project.JGenie.domain.coverletter.dto.request.CoverLetterAiRequest;
@@ -33,6 +34,7 @@ public class CoverLetterAiService {
     private final SecurityUtil securityUtil;
     private final ClaudeAiClient claudeAiClient;
     private final HttpSession session;
+    private final UserCareerService userCareerService;
 
     public CoverLetterAiService(UserRepository userRepository,
                                  ExampleCoverLetterRepository exampleCoverLetterRepository,
@@ -41,7 +43,8 @@ public class CoverLetterAiService {
                                  ClaudeAiClient claudeAiClient,
                                 UserCoverLetterRepository userCoverLetterRepository,
                                  HttpSession session,
-                                 CompanyRepository companyRepository) {
+                                 CompanyRepository companyRepository,
+                                UserCareerService userCareerService) {
         this.userRepository = userRepository;
         this.exampleCoverLetterRepository = exampleCoverLetterRepository;
         this.userCareerRepository = userCareerRepository;
@@ -50,6 +53,7 @@ public class CoverLetterAiService {
         this.userCoverLetterRepository = userCoverLetterRepository;
         this.companyRepository = companyRepository;
         this.session = session;
+        this.userCareerService = userCareerService;
     }
 
     public void coverLetterAi(CoverLetterAiRequest coverLetterAiRequest) throws RuntimeException{
@@ -70,7 +74,7 @@ public class CoverLetterAiService {
 
         Long companyId = companyRepository.findByCompanyName(coverLetterAiRequest.getCompanyName()).getCompanyId();
         CompanyEntity company = companyRepository.findById(companyId).orElse(null);
-        List<UserCareerEntity> userCareer = userCareerRepository.findByUserId(userId);
+        List<UserCareerEntity> userCareer = userCareerService.getUserCareers();
 
         List<ExampleCoverLetterEntity> exampleCoverLetter = exampleCoverLetterRepository.findByCompanyId(companyId);
 

@@ -2,6 +2,7 @@ package com.project.JGenie.global.infra.claude;
 
 import com.project.JGenie.domain.coverletter.entity.UserCoverLetterEntity;
 import com.project.JGenie.domain.coverletter.repository.UserCoverLetterRepository;
+import com.project.JGenie.global.common.util.SecurityUtil;
 import com.project.JGenie.global.infra.claude.dto.request.ClaudeAiRequest;
 import com.project.JGenie.global.infra.claude.dto.response.ClaudeAiResponse;
 import com.project.JGenie.global.infra.claude.prompt.ClaudeAiPrompt;
@@ -15,11 +16,13 @@ import org.springframework.stereotype.Component;
 public class ClaudeAiClient {
     private final AnthropicChatModel chatModel; //챗봇 관련 객체
     private final UserCoverLetterRepository userCoverLetterRepository;
+    private final SecurityUtil securityUtil;
 
     @Autowired
-    public ClaudeAiClient(AnthropicChatModel chatModel, UserCoverLetterRepository userCoverLetterRepository) { //챗봇 생성자 주입
+    public ClaudeAiClient(AnthropicChatModel chatModel, UserCoverLetterRepository userCoverLetterRepository, SecurityUtil securityUtil) { //챗봇 생성자 주입
         this.chatModel = chatModel;
         this.userCoverLetterRepository = userCoverLetterRepository;
+        this.securityUtil = securityUtil;
     }
 
 //    public void sendChatBot(ClaudeAiRequest claudeAiRequest) {
@@ -37,7 +40,7 @@ public class ClaudeAiClient {
             String aiResponse = chatModel.call(ClaudeAiPrompt.COVER_LETTER_PROMPT(claudeAiRequest));
             userCoverLetterRepository.save(UserCoverLetterEntity.builder()
                     .userId(claudeAiRequest.getUser().getId())
-                    .userCoverLetterContent(aiResponse)
+                    .userCoverLetterContent(securityUtil.encrypt(aiResponse))
                     .build());
         } catch (Exception e) {
             log.error("Claude API call failed: {}", e.getMessage());
