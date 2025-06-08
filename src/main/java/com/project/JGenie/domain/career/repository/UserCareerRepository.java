@@ -8,5 +8,6 @@ import java.util.List;
 public interface UserCareerRepository extends JpaRepository<UserCareerEntity, Long> {
     List<UserCareerEntity> findByUserId(String userId);
     boolean existsByCareerId(Long careerId);
+    boolean existsByUserId(String userId);
     void deleteByUserId(String userId);
 }

@@ -1,5 +1,6 @@
 package com.project.JGenie.domain.user.service;
 
+import com.project.JGenie.domain.career.repository.UserCareerEvaluationRepository;
 import com.project.JGenie.domain.career.repository.UserCareerRepository;
 import com.project.JGenie.domain.coverletter.repository.UserCoverLetterRepository;
 import com.project.JGenie.domain.user.dto.LoginDto;
@@ -18,16 +19,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserCoverLetterRepository userCoverLetterRepository;
     private final UserCareerRepository userCareerRepository;
+    private final UserCareerEvaluationRepository userCareerEvaluationRepository;
     private final SecurityUtil securityUtil;
     private final HttpSession session;
 
     public UserService(UserRepository userRepository, SecurityUtil securityUtil, HttpSession session
-    , UserCoverLetterRepository userCoverLetterRepository, UserCareerRepository userCareerRepository) {
+    , UserCoverLetterRepository userCoverLetterRepository, UserCareerRepository userCareerRepository
+    , UserCareerEvaluationRepository userCareerEvaluationRepository) {
         this.userRepository = userRepository;
         this.securityUtil = securityUtil;
         this.session = session;
         this.userCoverLetterRepository = userCoverLetterRepository;
         this.userCareerRepository = userCareerRepository;
+        this.userCareerEvaluationRepository = userCareerEvaluationRepository;
     }
 
     public boolean isValidId(String id) {
@@ -93,6 +97,7 @@ public class UserService {
             userCoverLetterRepository.deleteByUserId(userId);
             userCareerRepository.deleteByUserId(userId);
             userRepository.deleteById(userId);
+            userCareerEvaluationRepository.deleteByUserId(userId);
             session.invalidate(); // 세션 무효화
         }
     }
