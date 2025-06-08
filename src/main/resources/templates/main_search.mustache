@@ -874,9 +874,9 @@
 
     <!-- 빈 상태 -->
     <div class="empty-state" id="emptyState">
-        <div class="empty-icon">🔍</div>
-        <div class="empty-text">기업명을 검색해보세요</div>
-        <div class="empty-subtext">원하는 기업을 찾아 맞춤형 자기소개서를 작성할 수 있어요</div>
+        <div class="empty-icon">⏳</div>
+        <div class="empty-text">기업 데이터를 불러오는 중...</div>
+        <div class="empty-subtext">잠시만 기다려주세요</div>
     </div>
 </div>
 
@@ -1005,6 +1005,7 @@
     // 전역 변수
     let searchTimeout;
     let selectedCompany = null;
+    let allCompanies = []; // 모든 기업 데이터 저장
 
     // 로딩 메시지 배열
     const loadingMessages = [
@@ -1071,19 +1072,33 @@
         }
     }
 
-    // API에서 기업 검색
-    async function searchCompanies(companyName) {
+    // 모든 기업 데이터 가져오기
+    async function fetchAllCompanies() {
         try {
-            const response = await fetch(`/companies/${encodeURIComponent(companyName)}`);
+            const response = await fetch('/companies');
             if (!response.ok) {
-                throw new Error('검색 결과를 불러올 수 없습니다.');
+                throw new Error('기업 데이터를 불러올 수 없습니다.');
             }
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('검색 API 호출 오류:', error);
+            console.error('기업 데이터 로드 오류:', error);
             return [];
         }
+    }
+
+    // 클라이언트 필터링 함수
+    function filterCompanies(query) {
+        if (!query || query.trim() === '') {
+            return [];
+        }
+
+        const searchTerm = query.toLowerCase().trim();
+        return allCompanies.filter(company =>
+            company.companyName.toLowerCase().includes(searchTerm) ||
+            company.companyType.toLowerCase().includes(searchTerm) ||
+            company.industryType.toLowerCase().includes(searchTerm)
+        );
     }
 
     // 검색 결과 렌더링
@@ -1138,18 +1153,19 @@
             // 검색어가 없으면 결과 숨기기
             document.getElementById('resultsSection').style.display = 'none';
             document.getElementById('emptyState').style.display = 'block';
+            // 빈 상태 메시지 복원
+            document.getElementById('emptyState').innerHTML = `
+                <div class="empty-icon">🔍</div>
+                <div class="empty-text">기업명을 검색해보세요</div>
+                <div class="empty-subtext">원하는 기업을 찾아 맞춤형 자기소개서를 작성할 수 있어요</div>
+            `;
             return;
         }
 
-        // 300ms 지연 후 검색 실행
-        searchTimeout = setTimeout(async () => {
-            try {
-                const companies = await searchCompanies(query);
-                renderSearchResults(companies);
-            } catch (error) {
-                console.error('검색 오류:', error);
-                renderSearchResults([]);
-            }
+        // 100ms 지연 후 필터링 실행
+        searchTimeout = setTimeout(() => {
+            const filteredCompanies = filterCompanies(query);
+            renderSearchResults(filteredCompanies);
         }, 100);
     }
 
@@ -1266,8 +1282,29 @@
     });
 
     // 페이지 로드 시 초기화
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
         createParticles();
+
+        // 모든 기업 데이터 미리 로드
+        try {
+            allCompanies = await fetchAllCompanies();
+            console.log(`${allCompanies.length}개 기업 데이터 로드 완료`);
+
+            // 로딩 완료 후 기본 상태로 변경
+            document.getElementById('emptyState').innerHTML = `
+                <div class="empty-icon">🔍</div>
+                <div class="empty-text">기업명을 검색해보세요</div>
+                <div class="empty-subtext">원하는 기업을 찾아 맞춤형 자기소개서를 작성할 수 있어요</div>
+            `;
+        } catch (error) {
+            console.error('기업 데이터 로드 실패:', error);
+            // 오류 시 상태 변경
+            document.getElementById('emptyState').innerHTML = `
+                <div class="empty-icon">❌</div>
+                <div class="empty-text">기업 데이터를 불러올 수 없습니다</div>
+                <div class="empty-subtext">잠시 후 다시 시도해주세요</div>
+            `;
+        }
     });
 </script>
 </body>
