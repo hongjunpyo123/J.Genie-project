@@ -113,7 +113,7 @@ public class ClaudeAiPrompt {
                   === 경력 데이터 ===
                   %s
                   ================
-                  응답은 json 형태로 반환하며 데이터 이외에 어떤것도 포함시키지 마세요
+                  응답은 순수한 json 형태로만 반환하세요(마크다운 언어 등 금지)
                   evaluationMessage : 커리어 개선방향을 제시하세요 (짧게 1문장)
                   evaluationScore : 점수 (1-100, 보수적으로 산정)
                 """.formatted(careers.stream()
