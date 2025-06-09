@@ -70,6 +70,11 @@ public class ClaudeAiClient {
             //
 
             UserCareerEvaluationDto userCareerEvaluationDto = objectMapper.readValue(aiResponse, UserCareerEvaluationDto.class);
+
+            //
+            System.out.println("파싱 메시지 : "  + userCareerEvaluationDto.getEvaluationMessage());
+            System.out.println("파싱 스코어 : " + userCareerEvaluationDto.getEvaluationScore());
+            //
             userCareerEvaluationDto.setUserId(session.getAttribute("id").toString());
             return userCareerEvaluationDto;
         } catch (Exception e) {

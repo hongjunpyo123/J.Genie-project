@@ -113,11 +113,9 @@ public class ClaudeAiPrompt {
                   === 경력 데이터 ===
                   %s
                   ================
-                  응답은 항상 다음을 따릅니다 json 데이터 이외에 어떤것도 포함시키지 마세요
-                  {
-                      "evaluationMessage": "커리어 개선방향을 제시하세요 (짧게 1문장)",
-                      "evaluationScore": "점수 (1-100, 보수적으로 산정)"
-                  }
+                  응답은 json 형태로 반환하며 데이터 이외에 어떤것도 포함시키지 마세요
+                  evaluationMessage : 커리어 개선방향을 제시하세요 (짧게 1문장)
+                  evaluationScore : 점수 (1-100, 보수적으로 산정)
                 """.formatted(careers.stream()
                 .map(career -> "--- 경력 정보 ---\n" + "[" + career.getCareerType() + "]\n" + career.getCareerTitle() + "\n" + career.getCareerContent())
                 .collect(Collectors.joining("\n\n")));
