@@ -66,7 +66,7 @@ public class ClaudeAiClient {
             String aiResponse = chatModel.call(ClaudeAiPrompt.CAREER_EVALUATION_PROMPT(careers));
 
             //
-            System.out.println("AI Response: " + aiResponse);
+            System.out.println("AI Response:\n" + aiResponse);
             //
 
             UserCareerEvaluationDto userCareerEvaluationDto = objectMapper.readValue(aiResponse, UserCareerEvaluationDto.class);
