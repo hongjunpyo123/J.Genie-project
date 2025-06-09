@@ -113,8 +113,8 @@ public class ClaudeAiPrompt {
                   === 경력 데이터 ===
                   %s
                   ================
-                  응답은 항상 json 형식으로 작성하며, 다음과 같은 형식을 따르세요.
-                  json{
+                  응답은 항상 json 형식으로 작성하며 json만을 반환합니다, 다음과 같은 형식을 따르세요.
+                  {
                       "evaluationMessage": "커리어 개선방향을 제시하세요 (짧게 1문장)",
                       "evaluationScore": "점수 (1-100, 보수적으로 산정)"
                   }
